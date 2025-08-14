@@ -1,10 +1,4 @@
-/* Main content area */
-#main-content {
-    padding: 20px;
-    transition: all 0.3s ease;
-    background-color: #f4f6f9;
-    min-height: 100vh;
-}
+
 
 /* Heading style */
 .heading-line h3 {
