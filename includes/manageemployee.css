@@ -1,0 +1,146 @@
+/* ===== Header Controls ===== */
+#headerformanageemployee {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap; /* stay in one row until very small screens */
+    gap: 10px;
+    margin-bottom: 15px;
+}
+/* ===== Manage Employee Heading ===== */
+#main-content h3 {
+    font-size: clamp(20px, 2vw, 26px);
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #0c0c0c;
+    color: #333;
+    width: 100%;
+}
+.entries {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: clamp(11px, 1vw, 16px);
+    flex: 0 0 auto;
+}
+
+.searchbox {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: clamp(11px, 1vw, 16px);
+    flex: 0 0 auto;
+}
+
+.entries input,
+.searchbox input {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: clamp(3px, 0.5vw, 6px) clamp(6px, 0.8vw, 12px);
+    font-size: clamp(11px, 1vw, 14px);
+    max-width: 150px;
+}
+
+@media (max-width: 550px) {
+    #headerformanageemployee {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .entries, .searchbox {
+        width: 100%;
+        justify-content: space-between;
+    }
+    .searchbox input {
+        width: 100%;
+        max-width: none;
+    }
+}
+
+/* ===== Table Styling ===== */
+#empdetails {
+    border-collapse: collapse;
+    width: 100%;
+    background: #fff;
+    font-size: clamp(11px, 1vw, 14px);
+    table-layout: fixed;
+}
+
+#empdetails th,
+#empdetails td {
+    border: 1px solid #ddd;
+    padding: clamp(4px, 0.6vw, 8px);
+    text-align: left;
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#empdetails th {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Optimized column widths */
+#empdetails th:nth-child(1), #empdetails td:nth-child(1) { width: 5%; text-align: center; }
+#empdetails th:nth-child(2), #empdetails td:nth-child(2) { width: 18%; }
+#empdetails th:nth-child(3), #empdetails td:nth-child(3) { width: 23%; }
+#empdetails th:nth-child(4), #empdetails td:nth-child(4) { width: 12%; }
+#empdetails th:nth-child(5), #empdetails td:nth-child(5) { width: 12%; }
+#empdetails th:nth-child(6), #empdetails td:nth-child(6) { width: 30%; text-align: center; }
+
+/* ===== Action Buttons ===== */
+#edit, #delete {
+    padding: 3px 6px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+    margin: 1px;
+    display: inline-block;
+}
+
+#edit { background-color: #28a745; color: white; }
+#delete { background-color: #dc3545; color: white; }
+#edit a { color: white; text-decoration: none; }
+
+/* ===== Pagination Buttons ===== */
+.buttonscontrol {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+#previouspage, #nextpage {
+    background-color: #007bff;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85em;
+}
+
+#previouspage:hover, #nextpage:hover {
+    background-color: #0056b3;
+}
+
+/* ===== Responsive Scaling ===== */
+@media (max-width: 1026px) {
+    #empdetails { font-size: 0.9em; }
+    #empdetails th, #empdetails td { padding: 4px 5px; }
+    #edit, #delete { padding: 3px 5px; font-size: 0.75em; }
+}
+
+@media (max-width: 850px) {
+    #empdetails { font-size: 0.85em; }
+    #edit, #delete { padding: 2px 4px; font-size: 0.7em; }
+}
+
+@media (max-width: 650px) {
+    #empdetails { font-size: 0.8em; }
+    #empdetails th, #empdetails td { padding: 2px 3px; }
+    #edit, #delete { padding: 2px 3px; font-size: 0.65em; }
+}
