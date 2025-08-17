@@ -1,0 +1,218 @@
+.navbar .navbar-brand:hover
+  {
+    color: rgb(27, 113, 194);
+    /* font-size: larger; */
+  }
+.navbar .container ul #username 
+{
+  margin: auto;
+  font-size: 20px;
+}
+.navbar .container ul i {
+  margin-left: 15px;
+  font-size: 25px;
+}
+.nav-link.active
+{
+  background: #bfa7a7;
+}
+.offcanvas-body .nav-link {
+  color: black !important; /* Black text for sidebar links */
+  background-color: #d3d3d3 !important; /* Darker gray background for nav items */
+  margin-bottom: 5px; /* Space between nav items for boxed effect */
+  padding: 10px 15px; /* Padding for better box appearance */
+  border-radius: 5px; /* Rounded corners for boxed effect */
+}
+/* Sidebar Styling */
+    #sidebar {
+      width: 220px;
+      top: 56px; /* Height of fixed navbar */
+      left: 0;
+      height: calc(100vh - 56px);
+      position: fixed;
+      background-color: #212529; /* Bootstrap dark color */
+      padding-top: 1rem;
+      overflow-y: auto;
+      z-index: 1040;
+    }
+
+    #sidebar .nav-link {
+      color: #dee2e6; /* light text */
+    }
+
+    #sidebar .nav-link:hover,
+    #sidebar .nav-link:focus {
+      background-color: #343a40;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    /* Main Content */
+    #main-content {
+      margin-top: 5px;
+      margin-right: 5px;
+      margin-left: 225px;
+      padding-top: 16px;
+      padding-left: 20px;
+      padding-right: 20px;
+      padding-bottom: 15px;
+
+      /* border: 2px solid rgb(121, 104, 104); */
+      
+    }
+
+    /* Optional: Cursor pointer for submenu toggles */
+    .submenu-toggle {
+      cursor: pointer;
+    }
+
+
+
+
+/* Add employee Styling */
+
+#main-content h3
+{
+padding-bottom: 10px;
+border-bottom: 3px solid black;
+}
+
+    /* Left column: Personal Details */
+    #main-content .personaldetails {
+      margin-top: 13px;
+      flex: 1 1 45%; /* grow, shrink, basis */
+      min-width: 280px; /* avoid too narrow */
+      box-sizing: border-box;
+      height: 80vh;
+}
+
+
+#main-content .personaldetails h4
+{
+    margin: 0 15px;
+    padding: 10px 10px;
+    border-bottom: 1px solid black;
+}
+.detailshere {
+    margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* center all the form rows horizontally */
+  gap: 10px; /* space between rows */
+}
+
+.form-row {
+    margin-top: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* centers label and input together */
+  gap: 10px; /* space between label and input */
+  width: 80%; /* or any width you want */
+}
+
+.form-row label {
+  width: 100%; /* fixed width for label for alignment */
+  text-align: right; /* align label text to right for better look */
+}
+#main-content .detailshere .form-row  input,select
+{
+    width: 180%;
+}
+
+#main-content .companydetails , .financialdetails
+{
+    width: 100%;
+}
+
+  #main-content .details {
+  display: flex;
+  gap: 2rem; /* space between left and right columns */
+  flex-wrap: wrap; /* allow wrapping for smaller screens */
+}
+
+
+/* Right column: Company and Financial Details stacked */
+#main-content .compandfinancedetails {
+  flex: 1 1 45%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 280px;
+  box-sizing: border-box;
+}
+
+  .personaldetails, .compandfinancedetails {
+    flex: 1;
+    padding: 15px;
+    /* border: 2px solid wheat; */
+    border-radius: 5px;
+  }
+
+  /* Optional: visually distinguish sections */
+.personaldetails, 
+.companydetails, 
+.financialdetails {
+  padding: 1rem;
+  border: 1px solid wheat;
+  border-radius: 14px;
+  background: #d4cccc;
+}
+
+  .companydetails
+  {
+    height: 350px;
+  }
+  .companydetails h4{
+    
+    margin: 0 15px;
+    padding: 10px 10px;
+    border-bottom: 1px solid black;
+  }
+  .compandfinancedetails input,select
+  {
+    margin-top: 10px;
+    width: 180%;
+  }
+.compandfinancedetails
+{
+  display: flex;
+  flex-direction:column;
+}
+.financialdetails h4{
+  margin: 0 15px;
+    padding: 10px 10px;
+    border-bottom: 1px solid black;
+}
+#basicsalary
+{
+  padding-bottom: 8px;
+  /* border-bottom: 2px solid black; */
+}
+#allowances-container,
+#deductions-container {
+  display: flex;
+  justify-content: center; /* center horizontally */
+  align-items: center;    /* center vertically */
+  flex-direction: column; /* stack vertically if multiple rows */
+  gap: 10px;              /* space between rows */
+}
+#calculate-btn {
+  display: block;       /* make it a block element */
+  margin: 20px auto;    /* auto left and right margin centers it */
+  padding: 7px 13px;   /* adjust padding as needed */
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 13px;
+  border: none;
+}
+#savedetails
+{
+  display: block;       /* make it a block element */
+  margin: 20px auto;    /* auto left and right margin centers it */
+  padding: 7px 23px;   /* adjust padding as needed */
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 13px;
+  background-color: aqua;
+  border: none;
+}

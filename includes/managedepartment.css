@@ -1,0 +1,148 @@
+
+/* ===== Header Controls ===== */
+#headerformanagedepartment {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap; /* stay in one row until very small screens */
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+/* ===== Manage Department Heading ===== */
+#main-content .managedepartment {
+    font-size: clamp(20px, 2vw, 26px);
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #0c0c0c;
+    color: #333;
+    width: 100%;
+    font-weight: bold;
+}
+
+.entries {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: clamp(11px, 1vw, 16px);
+    flex: 0 0 auto;
+}
+
+.searchbox {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: clamp(11px, 1vw, 16px);
+    flex: 0 0 auto;
+}
+
+.entries input,
+.searchbox input {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: clamp(3px, 0.5vw, 6px) clamp(6px, 0.8vw, 12px);
+    font-size: clamp(11px, 1vw, 14px);
+    max-width: 150px;
+}
+
+@media (max-width: 550px) {
+    #headerformanagedepartment {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .entries, .searchbox {
+        width: 100%;
+        justify-content: space-between;
+    }
+    .searchbox input {
+        width: 100%;
+        max-width: none;
+    }
+}
+
+/* ===== Table Styling ===== */
+#deptdetails {
+    border-collapse: collapse;
+    width: 100%;
+    background: #fff;
+    font-size: clamp(11px, 1vw, 14px);
+    table-layout: fixed;
+}
+
+#deptdetails th,
+#deptdetails td {
+    border: 1px solid #ddd;
+    padding: clamp(4px, 0.6vw, 8px);
+    text-align: left;
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#deptdetails th {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Optimized column widths */
+#deptdetails th:nth-child(1), #deptdetails td:nth-child(1) { width: 25%; }
+#deptdetails th:nth-child(2), #deptdetails td:nth-child(2) { width: 25%; }
+#deptdetails th:nth-child(3), #deptdetails td:nth-child(3) { width: 20%; text-align: center; }
+#deptdetails th:nth-child(4), #deptdetails td:nth-child(4) { width: 30%; text-align: center; }
+
+/* ===== Action Buttons ===== */
+#edit, #delete {
+    padding: 3px 6px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+    margin: 1px;
+    display: inline-block;
+}
+
+#edit { background-color: #28a745; color: white; }
+#delete { background-color: #dc3545; color: white; }
+#edit a { color: white; text-decoration: none; }
+
+/* ===== Pagination Buttons ===== */
+.buttonscontrol {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+#previouspage, #nextpage {
+    background-color: #007bff;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85em;
+}
+
+#previouspage:hover, #nextpage:hover {
+    background-color: #0056b3;
+}
+
+/* ===== Responsive Scaling ===== */
+@media (max-width: 1026px) {
+    #deptdetails { font-size: 0.9em; }
+    #deptdetails th, #deptdetails td { padding: 4px 5px; }
+    #edit, #delete { padding: 3px 5px; font-size: 0.75em; }
+}
+
+@media (max-width: 850px) {
+    #deptdetails { font-size: 0.85em; }
+    #edit, #delete { padding: 2px 4px; font-size: 0.7em; }
+}
+
+@media (max-width: 650px) {
+    #deptdetails { font-size: 0.8em; }
+    #deptdetails th, #deptdetails td { padding: 2px 3px; }
+    #edit, #delete { padding: 2px 3px; font-size: 0.65em; }
+}

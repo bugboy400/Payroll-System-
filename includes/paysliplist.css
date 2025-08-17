@@ -1,0 +1,291 @@
+/* ===== MAIN CONTENT HEADER ===== */
+#main-content {
+  padding: clamp(0.8rem, 1.5vw, 1.2rem);
+  font-size: clamp(0.9rem, 1vw + 0.6rem, 1.1rem);
+}
+
+#main-content h3 {
+  padding-bottom: clamp(0.4rem, 0.8vw, 0.6rem);
+  border-bottom: 3px solid black;
+  font-weight: bold;
+}
+
+/* ===== YEAR & MONTH CONTAINER ===== */
+.year-month-container {
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(0.5rem, 1.2vw, 1rem);
+  background: #ffffff;
+  padding: clamp(0.8rem, 1.5vw, 1.2rem);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: clamp(2%, 4%, 4%);
+  flex-wrap: nowrap;
+}
+
+.year-section,
+.month-section {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 clamp(140px, 15vw, 180px);
+}
+
+label {
+  margin-bottom: 0.3rem;
+  font-weight: bold;
+  color: #333;
+  font-size: clamp(0.85rem, 0.9vw, 1rem);
+}
+
+input,
+button,
+select {
+  padding: clamp(0.4rem, 0.6vw, 0.6rem) clamp(0.6rem, 1vw, 0.8rem);
+  box-sizing: border-box;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  font-size: clamp(0.85rem, 0.9vw, 1rem);
+}
+
+input:focus,
+select:focus {
+  border-color: #007bff;
+  box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.4);
+}
+
+input,
+select {
+  width: 100%;
+  min-width: clamp(80px, 10vw, 240px);
+}
+
+button {
+  background-color: #f8f9fa;
+  color: #222;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  min-width: clamp(60px, 6vw, 100px);
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.1s ease;
+}
+button:hover {
+  transform: scale(1.03);
+}
+
+/* ===== FIND BUTTON (GREEN) ===== */
+#find-btn {
+  background-color: #28a745;
+  color: white;
+  font-weight: bold;
+  margin-left: -0.3rem;
+}
+#find-btn:hover {
+  background-color: #218838;
+}
+
+/* ===== MONTH DROPDOWN ===== */
+.month-input-container {
+  position: relative;
+}
+
+.month-dropdown {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  max-height: 200px;
+  width: 100%;
+  min-width: 160px;
+  z-index: 1000;
+  overflow-y: auto;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.month-dropdown div {
+  padding: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.2s ease;
+}
+.month-dropdown div:hover {
+  background-color: #f1f1f1;
+}
+
+/* ===== EMPLOYEE LIST CONTAINER ===== */
+.listhere {
+  background: #fff;
+  padding: clamp(1rem, 1.5vw, 1.25rem);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  max-width: 100%;
+  margin: auto;
+}
+
+/* ===== HEADER CONTROLS ===== */
+#headerformanageemployee {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  gap: clamp(0.5rem, 1vw, 0.8rem);
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.entries,
+.searchbox {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.4rem, 0.8vw, 0.5rem);
+}
+
+#headerformanageemployee label {
+  font-weight: bold;
+  color: #444;
+  font-size: clamp(0.8rem, 0.9vw, 0.95rem);
+}
+
+.entries input,
+.searchbox input {
+  padding: clamp(0.4rem, 0.6vw, 0.6rem) clamp(0.5rem, 0.8vw, 0.7rem);
+  font-size: clamp(0.8rem, 0.85vw, 0.95rem);
+  width: 100%;
+  min-width: clamp(60px, 6vw, 150px);
+}
+
+/* ===== TABLE WRAPPER FOR RESPONSIVENESS ===== */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto; /* enable horizontal scroll on small screens */
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  width: 100%;
+  min-width: 600px; /* keep structure but allow scroll below this width */
+  border-collapse: collapse;
+  font-size: clamp(0.75rem, 0.85vw, 0.9rem);
+  margin-top: 10px;
+  border: 1px solid #ddd;
+  table-layout: auto;
+  word-wrap: break-word;
+}
+
+/* ===== TABLE HEADER BLUE ===== */
+th {
+  background-color: #007bff; /* blue header */
+  color: white;
+  font-weight: 600;
+  padding: clamp(0.4rem, 0.6vw, 0.6rem);
+  text-align: left;
+  vertical-align: middle;
+}
+
+td {
+  padding: clamp(0.4rem, 0.6vw, 0.6rem);
+  border: 1px solid #ddd;
+  text-align: left;
+  vertical-align: middle;
+}
+
+tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* ===== STATUS BADGE ===== */
+.status {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  font-size: clamp(0.7rem, 0.8vw, 0.85rem);
+  font-weight: bold;
+  border-radius: 12px;
+  text-align: center;
+  min-width: 60px;
+}
+.status.paid {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+.status.pending {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+
+/* ===== STATUS DROPDOWN ===== */
+.status-dropdown {
+  padding: 0.25rem 0.6rem;
+  font-size: clamp(0.7rem, 0.8vw, 0.85rem);
+  font-weight: bold;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
+}
+.status-dropdown option[value="paid"] {
+  background-color: #d4edda;
+  color: #155724;
+}
+.status-dropdown option[value="pending"] {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+/* ===== ACTION BUTTONS (Always inline) ===== */
+.action-buttons {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: clamp(2px, 0.4vw, 4px);
+}
+
+.action-buttons button {
+  flex: 1 1 auto;
+  min-width: clamp(40px, 5vw, 100px);
+  padding: clamp(0.25rem, 0.5vw, 0.4rem);
+  font-size: clamp(0.7rem, 0.8vw, 0.85rem);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ===== DELETE BUTTON ===== */
+#delete {
+  background-color: #dc3545;
+  color: white;
+}
+#delete:hover {
+  background-color: #c82333;
+}
+
+/* ===== DOWNLOAD PAYSLIP BUTTON ===== */
+#download-payslip {
+  background-color: #17a2b8; /* teal */
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.1s ease;
+}
+#download-payslip:hover {
+  background-color: #138496;
+  transform: scale(1.03);
+}
+
+/* ===== PAGINATION BUTTONS ===== */
+.buttonscontrol {
+  text-align: center;
+  margin-top: 1rem;
+}
+.buttonscontrol button {
+  background-color: #1484e6;
+  color: white;
+  font-weight: bold;
+}
+.buttonscontrol button:hover {
+  background-color: #138deb;
+}

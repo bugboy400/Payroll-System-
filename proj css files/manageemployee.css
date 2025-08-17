@@ -1,0 +1,61 @@
+
+
+/* MANAGE EMPLOYEE CSS */
+
+.manageemployee
+{
+    padding-bottom: 10px;
+    border-bottom: 2px solid black;
+}
+#headerformanageemployee
+{
+    display: flex;
+    justify-content: space-between;
+    margin: 15px;
+}
+#headerformanageemployee .entries input{
+    width: 30%;
+    border-radius: 8px;
+}
+#empdetails , table, thead, tr, th, tbody,td
+{
+    border: 2px solid rgb(88, 88, 142);
+}
+#empdetails , table
+{
+    margin-bottom: 20px;
+}
+#empdetails , table,tbody,tr,td,button{
+    border-radius: 8px;
+    padding: auto auto;
+}
+#empdetails #viewdetail
+{
+    color: white;
+    background-color: green;
+} 
+#empdetails #edit
+{
+    background-color: blue;
+    color: white;
+    
+} 
+#empdetails #delete
+{
+    color: white;
+    background-color: red;
+
+} 
+.buttonscontrol {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.buttonscontrol button {
+  margin: 0 3px;       /* remove any default button margin */
+  padding: 3px 15px; /* optionally adjust button padding for size */
+  border-radius: 8px;
+}
+
+
+

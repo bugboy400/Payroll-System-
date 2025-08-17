@@ -1,0 +1,204 @@
+#main-content {
+  padding-top: 16px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 15px;
+}
+
+#main-content,
+#allow-deduct {
+  padding: 16px 20px 15px 20px;
+}
+
+#main-content h3 {
+  padding-bottom: 10px;
+  border-bottom: 3px solid black;
+}
+
+.form-section {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  }
+
+  .form-section h5 {
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+
+  .form-row {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+    margin-bottom: 0.8rem;
+  }
+
+  select, input[type="number"] {
+    padding: 0.45rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    flex: 1;
+  }
+
+  .btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+  }
+
+  .add-btn {
+    background: #28a745;
+  }
+
+  .remove-btn {
+    background: #dc3545;
+  }
+
+  .btn-icon:hover {
+    opacity: 0.85;
+  }
+
+
+
+  /* ALLOWANCES & DEDUCTIONS WRAPPER */
+#allow-deduct {
+  padding: 16px 20px 15px 20px;
+  margin: 10px 10px 10px 225px;
+  max-width: calc(100% - 235px);
+  box-sizing: border-box;
+}
+
+.form-section {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1.2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.form-section h5 {
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+select,
+input[type="number"] {
+  padding: 0.45rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  flex: 1;
+}
+
+.btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+}
+
+.add-btn {
+  background: #28a745;
+}
+
+.remove-btn {
+  background: #dc3545;
+}
+
+.btn-icon:hover {
+  opacity: 0.85;
+}
+
+/* SUMMARY SECTION */
+#summary {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 10px 10px 10px 225px; /* same left spacing as allow-deduct */
+  max-width: calc(100% - 235px);
+  box-sizing: border-box;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+
+  display: flex;
+  flex-direction: column;
+}
+
+#summary h3 {
+  text-align: left;
+  margin-bottom: 1.5rem;
+  font-weight: bold;
+  border: none; /* removed underline */
+  padding-bottom: 0;
+}
+
+#summary .form-container {
+  flex: 1; /* takes remaining space under header */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* vertical centering */
+  align-items: center; /* keep aligned left */
+}
+
+/* Form row layout */
+#summary .form-rowsum {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  max-width: 420px;
+}
+
+#summary label {
+  min-width: 130px; /* consistent label width so inputs align */
+  font-weight: bold;
+  text-align: right;
+  margin-right: 15px;
+}
+
+#summary .form-rowsum input,
+#summary .form-rowsum select {
+  width: 200px; /* increased width */
+  padding: 0.5rem 0.6rem; /* bigger padding for better look */
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+#summary button {
+  display: block;
+  margin: 2rem auto 0 auto;
+  padding: 10px 20px;
+  background-color: #4a90e2;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#summary button:hover {
+  background-color: #357abd;
+}

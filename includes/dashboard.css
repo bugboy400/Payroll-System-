@@ -1,0 +1,59 @@
+
+
+/* Heading style */
+.heading-line h3 {
+    font-weight: 600;
+    color: #333;
+    border-bottom: 3px solid #101011;
+    display: block; /* full width by default */
+    padding-bottom: 5px;
+    margin-bottom: 25px;
+}
+
+
+/* Numbering boxes */
+.numberings .box {
+    background: white;
+    border-radius: 12px;
+    padding: 25px 15px;
+    box-shadow: 0px 3px 8px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.numberings .box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 8px 20px rgba(0,0,0,0.1);
+}
+
+/* Icons inside boxes */
+.numberings .box i {
+    font-size: 2.5rem;
+    color: #0d6efd;
+    margin-bottom: 10px;
+}
+
+/* Text inside boxes */
+.numberings .box h5 {
+    font-weight: 500;
+    color: #555;
+}
+
+/* Quote section */
+#quote {
+    margin-top: 20px;
+    background: linear-gradient(135deg, #0d6efd, #5a9bff);
+    color: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0px 3px 10px rgba(0,0,0,0.1);
+}
+
+#quote h3 {
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+#quote h6 {
+    font-weight: 400;
+    opacity: 0.9;
+}

@@ -1,0 +1,222 @@
+#main-content {
+  padding-top: 16px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 15px;
+}
+#main-content h3 {
+  padding-bottom: 10px;
+  border-bottom: 3px solid black;
+}
+.year-month-container {
+  display: flex;
+  align-items: flex-end; /* aligns inputs and button horizontally */
+  gap: 20px;
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 4%;
+}
+.year-section,
+.month-section {
+  display: flex;
+  flex-direction: column;
+}
+label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+input,
+button {
+  padding: 8px;
+  box-sizing: border-box;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+input:focus {
+  border-color: #007bff;
+  box-shadow: 0px 0px 4px rgba(0, 123, 255, 0.5);
+}
+input {
+  width: 200px; /* Increased width */
+}
+button {
+  /* background-color: #007bff; */
+  color: rgb(5, 5, 5);
+  border: none;
+  border-radius: 4px;
+  width: 80px;
+  height: 38px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+button:hover {
+  background-color: #0056b3;
+}
+.month-dropdown {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  max-height: 200px;
+  width: 200px; /* Match input width */
+  z-index: 1000;
+  overflow-y: auto;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+}
+.month-dropdown div {
+  padding: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.2s ease;
+}
+.month-dropdown div:hover {
+  background-color: #f1f1f1;
+}
+.month-input-container {
+  position: relative;
+}
+
+
+/*  SHOWING THE EMPLOYEES */
+.listhere {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    max-width: 1200px; /* Increased max width */
+    margin: auto;
+  }
+
+  /* Header for controls */
+  #headerformanageemployee {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  .entries, .searchbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  label {
+    font-weight: bold;
+    color: #444;
+  }
+
+  input[type="number"],
+  input[type="text"] {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  input:focus {
+    border-color: #666;
+  }
+
+  /* Table Styling */
+  table {
+    width: 100%; /* Full width */
+    border-collapse: collapse;
+    font-size: 14px;
+    margin-top: 10px;
+    border: 1px solid #ccc; /* Border for table */
+  }
+
+  th, td {
+    padding: 10px;
+    border: 1px solid #ccc; /* Border between cells */
+    text-align: left;
+  }
+
+  th {
+    background-color: #e9ecef; /* Neutral header color */
+    color: #333;
+    font-weight: bold;
+  }
+
+  tr:hover {
+    background-color: #f8f9fa; /* Light hover */
+  }
+
+  /* Buttons */
+  button {
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    margin: 2px;
+    transition: background-color 0.3s;
+  }
+
+  #viewdetail {
+    background-color: #6c757d;
+    color: white;
+  }
+
+  #viewdetail:hover {
+    background-color: #5a6268;
+  }
+
+  #edit {
+    background-color: #adb5bd;
+    color: #333;
+  }
+
+  #edit:hover {
+    background-color: #929a9e;
+  }
+
+  #delete {
+    background-color: #868e96;
+    color: white;
+  }
+
+  #delete:hover {
+    background-color: #6c757d;
+  }
+
+  /* Pagination Buttons */
+  .buttonscontrol {
+    text-align: center;
+    margin-top: 15px;
+  }
+
+  .buttonscontrol button {
+    background-color: #6c757d;
+    color: white;
+    font-weight: bold;
+  }
+
+  .buttonscontrol button:hover {
+    background-color: #5a6268;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    #headerformanageemployee {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    table {
+      font-size: 12px;
+    }
+
+    button {
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+  }

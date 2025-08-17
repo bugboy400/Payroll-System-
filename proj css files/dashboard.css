@@ -1,0 +1,104 @@
+/* === GENERAL RESET === */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+    }
+
+    /* === NAVBAR === */
+    .navbar-custom {
+      background-color: #000;
+      height: 70px;
+    }
+    .navbar-custom .navbar-brand {
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      font-weight: bold;
+      color: yellow;
+    }
+    .navbar-custom .nav-link,
+    .navbar-custom .dropdown-toggle {
+      font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+      color: white !important;
+    }
+    .navbar-custom .dropdown-menu a {
+      color: black !important;
+    }
+
+    /* === LAYOUT === */
+    #layout {
+      display: flex;
+      margin-top: 70px; /* Push below navbar */
+    }
+
+    /* === SIDEBAR - fixed & scrollable === */
+    #sidebar {
+      position: fixed;
+      top: 70px; /* Below navbar */
+      left: 0;
+      width: 220px;
+      height: calc(100vh - 70px); /* Fill remaining viewport height */
+      overflow-y: auto;
+      background-color: black;
+      color: white;
+      transition: width 0.3s ease;
+      padding-top: 10px;
+      border-right: 1px solid #222;
+      z-index: 1000;
+    }
+
+    /* Sidebar collapsed state */
+    #sidebar.collapsed {
+      width: 70px;
+    }
+    #sidebar.collapsed .nav-link span {
+      display: none;
+    }
+
+    /* Sidebar Scrollbar */
+    #sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+    #sidebar::-webkit-scrollbar-thumb {
+      background: #444;
+      border-radius: 4px;
+    }
+
+    /* Sidebar nav link styling */
+    #sidebar .nav-link {
+      color: white;
+      font-size: clamp(0.85rem, 1.2vw, 1rem);
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+    #sidebar .nav-link:hover,
+    #sidebar .nav-link.active {
+      background-color: yellow;
+      color: black !important;
+    }
+    #sidebar i {
+      font-size: clamp(1.1rem, 2vw, 1.3rem);
+    }
+
+    /* Submenu arrow rotation */
+    .submenu-toggle i.bi-chevron-down {
+      transition: transform 0.3s;
+    }
+    .submenu-toggle[aria-expanded="true"] i.bi-chevron-down {
+      transform: rotate(180deg);
+    }
+    /* === RESPONSIVE SIDEBAR === */
+    @media (max-width: 768px) {
+      #sidebar {
+        width: 70px !important;
+      }
+      #sidebar .nav-link span {
+        display: none !important;
+      }
+      #main-content {
+        margin-left: 70px !important;
+      }
+      #sidebar .submenu-toggle i.bi-chevron-down {
+        display: none !important;
+      }
+    }

@@ -1,0 +1,79 @@
+/* MANAGE DEPARTMENT CSS */
+
+.managedepartment {
+    padding-bottom: 10px;
+    border-bottom: 2px solid black;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin: 15px 0;
+}
+
+#headerformanagedepartment {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px;
+}
+
+#headerformanagedepartment .entries input {
+    width: 30%;
+    border-radius: 8px;
+    padding: 5px 8px;
+    border: 1px solid #8888aa;
+}
+
+#headerformanagedepartment .searchbox input {
+    border-radius: 8px;
+    padding: 5px 8px;
+    border: 1px solid #8888aa;
+    width: 200px;
+}
+
+#deptdetails, table, thead, tr, th, tbody, td {
+    border: 2px solid rgb(88, 88, 142);
+    border-collapse: collapse;
+}
+
+#deptdetails, table {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+#deptdetails, table, tbody, tr, td, button {
+    border-radius: 8px;
+    padding: 8px 12px;
+}
+
+#deptdetails #edit {
+    background-color: blue;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#deptdetails #delete {
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.buttonscontrol {
+    display: flex;
+    justify-content: flex-end;
+    margin: 15px;
+}
+
+.buttonscontrol button {
+    margin: 0 3px;
+    padding: 3px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    background-color: #4444aa;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.buttonscontrol button:hover {
+    background-color: #222277;
+}
