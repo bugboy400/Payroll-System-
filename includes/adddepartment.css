@@ -155,3 +155,54 @@ html, body {
     font-size: 0.85rem;
   }
 }
+/* Department section */
+.department select.form-select,
+.department input.form-input {
+    width: 100%;
+    padding: 8px 12px;
+    margin-top: 6px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+/* Designation list container */
+.designation-list {
+    margin-top: 10px;
+}
+
+/* Each designation input + delete button */
+.designation-item input.form-input {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.designation-item button.remove-btn {
+    padding: 0 10px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Add designation button */
+#addDesignationBtn {
+    display: inline-block;
+}
+
+/* Margin between department and designations */
+.department, .designation {
+    margin-bottom: 20px;
+}
+
+/* Hover effects */
+.designation-item input.form-input:focus,
+.department select.form-select:focus,
+.department input.form-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 4px rgba(0,123,255,0.3);
+}
