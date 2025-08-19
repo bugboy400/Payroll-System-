@@ -101,7 +101,7 @@
 }
 
 #edit { background-color: #28a745; color: white; }
-#delete { background-color: #dc3545; color: white; }
+.delete-btn { background-color: #dc3545; color: white; }
 #edit a { color: white; text-decoration: none; }
 
 /* ===== Pagination Buttons ===== */
