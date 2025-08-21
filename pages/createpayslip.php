@@ -12,7 +12,7 @@ ob_start();
   <h3>Create Payslip</h3>
 
   <div class="container mt-4 p-4" style="background: #fff; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
-    <form>
+    <form id="payslip-form">
       <div class="row g-4 align-items-end">
         <!-- Department -->
         <div class="col-md-3">
@@ -27,7 +27,6 @@ ob_start();
           <label for="employee" class="form-label fw-bold">Employee</label>
           <input list="employee-list" id="employee" class="form-control p-2" placeholder="Search Employee">
           <datalist id="employee-list"></datalist>
-          <!-- Hidden field stores actual employee ID -->
           <input type="hidden" id="employee_id" name="employee_id">
         </div>
 
@@ -52,7 +51,7 @@ ob_start();
   </div>
 </div>
 
-<!-- ALLOWANCES & DEDUCTIONS -->
+<!-- ALLOWANCES & DEDUCTIONS (Original Code) -->
 <div id="allow-deduct" class="container-fluid mt-4" style="display: none;">
   <div class="row g-4">
     <!-- ALLOWANCE -->
@@ -72,7 +71,9 @@ ob_start();
             <button type="button" class="btn-icon remove-btn remove-allowance-btn">×</button>
           </div>
         </div>
+
         <hr class="mt-4">
+
         <h6 class="mt-3">Other Allowance</h6>
         <div class="row mt-2">
           <div class="col-6">
@@ -100,7 +101,9 @@ ob_start();
             <button type="button" class="btn-icon remove-btn remove-deduction-btn">×</button>
           </div>
         </div>
+
         <hr class="mt-4">
+
         <h6 class="mt-3">Other Deduction</h6>
         <div class="row mt-2">
           <div class="col-6">
@@ -147,26 +150,24 @@ ob_start();
       </select>
     </div>
 
-    <button type="submit">Create Payslip</button>
+    <button type="button" id="create-payslip-btn">Create Payslip</button>
   </div>
 </div>
 
 <script>
 // =====================
-// Set current year & months
+// Initialize Year & Month
 // =====================
 document.getElementById('year').value = new Date().getFullYear();
 const monthSelect = document.getElementById('month');
 const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-for(let i=0;i<=new Date().getMonth();i++){
-  const option = document.createElement('option');
-  option.value = monthNames[i];
-  option.textContent = monthNames[i];
-  monthSelect.appendChild(option);
-}
+monthNames.forEach((m,i)=>{ if(i<=new Date().getMonth()){ 
+  const option = document.createElement('option'); 
+  option.value = m; option.textContent = m; monthSelect.appendChild(option); 
+}});
 
 // =====================
-// Load departments dynamically
+// Load Departments
 // =====================
 function loadDepartments() {
   fetch('../controller/fetchdept_payslip.php')
@@ -184,91 +185,89 @@ function loadDepartments() {
 loadDepartments();
 
 // =====================
-// Employee autocomplete with dynamic suggestions
+// Employee autocomplete
 // =====================
-let employeeList = []; // Full employee list for selected department
-let employeeMap = {};  // Map display string => emp_id
+let employeeList = [];
 
-document.getElementById('department').addEventListener('change', function() {
+document.getElementById('department').addEventListener('change', function(){
   const deptId = this.value;
   const empInput = document.getElementById('employee');
   const empDatalist = document.getElementById('employee-list');
   const hiddenEmpId = document.getElementById('employee_id');
 
-  // Reset input, hidden field, and datalist
   empInput.value = '';
   empDatalist.innerHTML = '';
   hiddenEmpId.value = '';
   employeeList = [];
-  employeeMap = {};
 
   if(deptId){
     fetch(`../controller/get_employees.php?dept_id=${deptId}`)
       .then(res => res.json())
       .then(data => {
-        employeeList = data.employees; // store for dynamic filtering
-        updateDatalist(''); // initially populate all employees
+        employeeList = data.employees;
+        updateDatalist(''); // show all initially
       });
   }
 });
 
-// Function to update datalist based on typed filter
-function updateDatalist(filter) {
+function updateDatalist(filter){
   const empDatalist = document.getElementById('employee-list');
   empDatalist.innerHTML = '';
-  employeeMap = {};
-
   employeeList
     .filter(emp => emp.name.toLowerCase().includes(filter.toLowerCase()))
-    .forEach(emp => {
+    .forEach(emp=>{
       const display = `${emp.name} (${emp.emp_id})`;
       const option = document.createElement('option');
       option.value = display;
       empDatalist.appendChild(option);
-      employeeMap[display] = emp.emp_id;
     });
 }
 
-// Update hidden emp_id and filter suggestions while typing
-document.getElementById('employee').addEventListener('input', function() {
-  const value = this.value;
-  updateDatalist(value); // dynamic filtering
+// Extract employee_id from selected datalist
+document.getElementById('employee').addEventListener('input', function(){
+  const value = this.value.trim();
   const hiddenEmpId = document.getElementById('employee_id');
-  hiddenEmpId.value = employeeMap[value] || '';
+  const match = value.match(/\(([^)]+)\)$/); // get id inside parentheses
+  if(match){ hiddenEmpId.value = match[1]; }
+  else{ hiddenEmpId.value = ''; }
+  updateDatalist(value); // filter suggestions
 });
 
 // =====================
 // Show Allowances & Summary on Next
 // =====================
-document.getElementById('next-btn').addEventListener('click', function() {
+document.getElementById('next-btn').addEventListener('click', function(){
+  const empId = document.getElementById('employee_id').value;
+  if(!empId){ alert('Select employee first'); return; }
+
   document.getElementById('allow-deduct').style.display = 'block';
   document.getElementById('summary').style.display = 'block';
-  document.getElementById('allow-deduct').scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('allow-deduct').scrollIntoView({behavior:'smooth'});
 });
 
 // =====================
-// Dynamic Allowances/Deductions Add/Remove
+// Dynamic Add/Remove Rows
 // =====================
 document.addEventListener('click', function(e){
   if(e.target.classList.contains('add-allowance-btn')){
     const container = document.getElementById('allowances-container');
     const newRow = e.target.closest('.allowance-row').cloneNode(true);
-    newRow.querySelectorAll('input').forEach(input=>input.value='');
+    newRow.querySelectorAll('input, select').forEach(inp=>{ if(!inp.classList.contains('allowancename')) inp.value=''; });
     container.appendChild(newRow);
   }
   if(e.target.classList.contains('remove-allowance-btn')){
-    const row = e.target.closest('.allowance-row');
-    if(document.querySelectorAll('.allowance-row').length>1) row.remove();
+    if(document.querySelectorAll('.allowance-row').length>1)
+      e.target.closest('.allowance-row').remove();
   }
   if(e.target.classList.contains('add-deduction-btn')){
     const container = document.getElementById('deductions-container');
     const newRow = e.target.closest('.deduction-row').cloneNode(true);
-    newRow.querySelectorAll('input').forEach(input=>input.value='');
+    newRow.querySelectorAll('input, select').forEach(inp=>{ if(!inp.classList.contains('deductionname')) inp.value=''; });
     container.appendChild(newRow);
   }
   if(e.target.classList.contains('remove-deduction-btn')){
-    const row = e.target.closest('.deduction-row');
-    if(document.querySelectorAll('.deduction-row').length>1) row.remove();
+    if(document.querySelectorAll('.deduction-row').length>1)
+      e.target.closest('.deduction-row').remove();
   }
 });
 

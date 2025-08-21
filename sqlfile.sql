@@ -99,3 +99,71 @@ CREATE TABLE IF NOT EXISTS payslip_deductions (
     deduction_amt DECIMAL(10,2),
     FOREIGN KEY (payslip_id) REFERENCES payslips(payslip_id) ON DELETE CASCADE
 );
+
+
+-- Add UNIQUE constraint to prevent duplicate payments
+ALTER TABLE payslips 
+ADD CONSTRAINT unique_payment UNIQUE (employee_id, month, year);
+
+-- Make allowance_name and allowance_amt NOT NULL (optional)
+ALTER TABLE payslip_allowances
+MODIFY allowance_name VARCHAR(100) NOT NULL,
+MODIFY allowance_amt DECIMAL(10,2) NOT NULL;
+
+ALTER TABLE payslip_deductions
+MODIFY deduction_name VARCHAR(100) NOT NULL,
+MODIFY deduction_amt DECIMAL(10,2) NOT NULL;
+
+-- Add indexes for faster queries (optional)
+CREATE INDEX idx_employee ON payslips(employee_id);
+CREATE INDEX idx_month_year ON payslips(month, year);
+
+
+-- Departments table (if not exists)
+CREATE TABLE IF NOT EXISTS departments (
+    dept_id INT AUTO_INCREMENT PRIMARY KEY,
+    department_name VARCHAR(100) NOT NULL
+);
+
+-- Employees table (if not exists)
+CREATE TABLE IF NOT EXISTS employees_personal (
+    emp_id VARCHAR(20) PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    dept_id INT,
+    FOREIGN KEY (dept_id) REFERENCES departments(dept_id)
+);
+
+-- Payslips
+CREATE TABLE IF NOT EXISTS payslips (
+    payslip_id INT AUTO_INCREMENT PRIMARY KEY,
+    employee_id VARCHAR(20) NOT NULL,
+    dept_id INT NOT NULL,
+    year INT NOT NULL,
+    month VARCHAR(20) NOT NULL,
+    basic_salary DECIMAL(10,2) NOT NULL,
+    total_allowance DECIMAL(10,2) NOT NULL,
+    total_deduction DECIMAL(10,2) NOT NULL,
+    net_salary DECIMAL(10,2) NOT NULL,
+    status ENUM('Paid','Unpaid') DEFAULT 'Unpaid',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (employee_id) REFERENCES employees_personal(emp_id) ON DELETE CASCADE,
+    FOREIGN KEY (dept_id) REFERENCES departments(dept_id) ON DELETE CASCADE
+);
+
+-- Payslip Allowances
+CREATE TABLE IF NOT EXISTS payslip_allowances (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    payslip_id INT NOT NULL,
+    title VARCHAR(100),
+    amount DECIMAL(10,2),
+    FOREIGN KEY (payslip_id) REFERENCES payslips(payslip_id) ON DELETE CASCADE
+);
+
+-- Payslip Deductions
+CREATE TABLE IF NOT EXISTS payslip_deductions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    payslip_id INT NOT NULL,
+    title VARCHAR(100),
+    amount DECIMAL(10,2),
+    FOREIGN KEY (payslip_id) REFERENCES payslips(payslip_id) ON DELETE CASCADE
+);
