@@ -25,12 +25,6 @@ ob_start();
           Logo and Title
         </button>
       </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="allowance-tab" data-bs-toggle="tab" data-bs-target="#allowance" type="button"
-          role="tab" aria-controls="allowance" aria-selected="false">
-          Allowance and Deduction
-        </button>
-      </li>
     </ul>
 
     <!-- Tab Content -->
@@ -149,81 +143,6 @@ ob_start();
         </form>
       </div>
 
-
-<div class="tab-pane fade" id="allowance" role="tabpanel" aria-labelledby="allowance-tab">
-  <h5 class="mb-4 text-center">Allowance and Deduction</h5>
-
-  <div id="allow-deduct" class="container mt-4">
-    <div class="row g-4">
-      <!-- ALLOWANCE -->
-      <div class="col-lg-6">
-        <div class="form-section border p-3 rounded">
-          <h5>Allowances</h5>
-          <div id="allowances-container">
-            <div class="d-flex gap-2 mb-2 allowance-row">
-              <select name="allowance" class="form-select allowancename">
-                <option value="homeallowance">Home Allowance</option>
-                <option value="healthallowance">Health Allowance</option>
-                <option value="overtimeallowance">OT Allowance</option>
-                <option value="festiveallowance">Festive Allowance</option>
-              </select>
-              <input type="number" name="allowanceamt" class="form-control allowanceamt" placeholder="Amount">
-              <button type="button" class="btn btn-success add-allowance-btn">+</button>
-              <button type="button" class="btn btn-danger remove-allowance-btn">×</button>
-            </div>
-          </div>
-
-          <hr class="mt-4">
-
-          <h6 class="mt-3">Other Allowance</h6>
-          <div class="row mt-2">
-            <div class="col-6">
-              <input type="text" name="otherallowancetitle" class="form-control" placeholder="Title">
-            </div>
-            <div class="col-6">
-              <input type="number" name="otherallowanceamt" class="form-control" placeholder="Amount">
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- DEDUCTIONS -->
-      <div class="col-lg-6">
-        <div class="form-section border p-3 rounded">
-          <h5>Deductions</h5>
-          <div id="deductions-container">
-            <div class="d-flex gap-2 mb-2 deduction-row">
-              <select name="deduction" class="form-select deductionname">
-                <option value="providentfund">Provident Fund</option>
-                <option value="leave">Leave</option>
-              </select>
-              <input type="number" name="deductionamt" class="form-control deductionamt" placeholder="Amount">
-              <button type="button" class="btn btn-success add-deduction-btn">+</button>
-              <button type="button" class="btn btn-danger remove-deduction-btn">×</button>
-            </div>
-          </div>
-
-          <hr class="mt-4">
-
-          <h6 class="mt-3">Other Deduction</h6>
-          <div class="row mt-2">
-            <div class="col-6">
-              <input type="text" name="otherdeductiontitle" class="form-control" placeholder="Title">
-            </div>
-            <div class="col-6">
-              <input type="number" name="otherdeductionamt" class="form-control" placeholder="Amount">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Save Button -->
-    <div class="text-center mt-4">
-      <button type="submit" class="btn btn-primary px-4">Save</button>
-    </div>
-  </div>
-</div>
 
     </div>
   </div>

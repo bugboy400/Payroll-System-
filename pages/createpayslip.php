@@ -8,7 +8,6 @@ $page_css = [
 ob_start();
 ?>
 
-<!-- Main content -->
 <div id="main-content">
   <h3>Create Payslip</h3>
 
@@ -18,13 +17,18 @@ ob_start();
         <!-- Department -->
         <div class="col-md-3">
           <label for="department" class="form-label fw-bold">Department</label>
-          <input type="text" id="department" class="form-control p-2" placeholder="Enter Department">
+          <select id="department" class="form-control p-2">
+            <option value="">Select Department</option>
+          </select>
         </div>
 
-        <!-- Employee -->
+        <!-- Employee (Searchable) -->
         <div class="col-md-3">
           <label for="employee" class="form-label fw-bold">Employee</label>
-          <input type="text" id="employee" class="form-control p-2" placeholder="Enter Employee Name">
+          <input list="employee-list" id="employee" class="form-control p-2" placeholder="Search Employee">
+          <datalist id="employee-list"></datalist>
+          <!-- Hidden field stores actual employee ID -->
+          <input type="hidden" id="employee_id" name="employee_id">
         </div>
 
         <!-- Year -->
@@ -41,7 +45,7 @@ ob_start();
 
         <!-- Next Button -->
         <div class="col-md-2">
-          <button type="submit" class="btn  w-100 py-2">Next</button>
+          <button type="button" id="next-btn" class="btn w-100 py-2">Next</button>
         </div>
       </div>
     </form>
@@ -49,7 +53,7 @@ ob_start();
 </div>
 
 <!-- ALLOWANCES & DEDUCTIONS -->
-<div id="allow-deduct" class="container-fluid mt-4">
+<div id="allow-deduct" class="container-fluid mt-4" style="display: none;">
   <div class="row g-4">
     <!-- ALLOWANCE -->
     <div class="col-lg-6">
@@ -68,9 +72,7 @@ ob_start();
             <button type="button" class="btn-icon remove-btn remove-allowance-btn">×</button>
           </div>
         </div>
-
         <hr class="mt-4">
-
         <h6 class="mt-3">Other Allowance</h6>
         <div class="row mt-2">
           <div class="col-6">
@@ -98,9 +100,7 @@ ob_start();
             <button type="button" class="btn-icon remove-btn remove-deduction-btn">×</button>
           </div>
         </div>
-
         <hr class="mt-4">
-
         <h6 class="mt-3">Other Deduction</h6>
         <div class="row mt-2">
           <div class="col-6">
@@ -115,118 +115,183 @@ ob_start();
   </div>
 </div>
 
-<div id="summary">
+<!-- SUMMARY -->
+<div id="summary" style="display: none;">
   <h3>Summary</h3>
-
-
   <div class="form-container">
-    
-  <div class="form-rowsum">
-    <label for="basic-salary">Basic Salary</label>
-    <input type="number" name="basic_salary" id="basic-salary">
+    <div class="form-rowsum">
+      <label for="basic-salary">Basic Salary</label>
+      <input type="number" name="basic_salary" id="basic-salary">
+    </div>
+
+    <div class="form-rowsum">
+      <label for="total-allowance">Total Allowance</label>
+      <input type="number" name="total_allowance" id="total-allowance">
+    </div>
+
+    <div class="form-rowsum">
+      <label for="total-deduction">Total Deduction</label>
+      <input type="number" name="total_deduction" id="total-deduction">
+    </div>
+
+    <div class="form-rowsum">
+      <label for="net-salary">Net Salary</label>
+      <input type="number" name="net_salary" id="net-salary">
+    </div>
+
+    <div class="form-rowsum">
+      <label for="status">Status</label>
+      <select name="status" id="status">
+        <option value="Paid">Paid</option>
+        <option value="Unpaid" selected>Unpaid</option>
+      </select>
+    </div>
+
+    <button type="submit">Create Payslip</button>
   </div>
-
-  <div class="form-rowsum">
-    <label for="total-allowance">Total Allowance</label>
-    <input type="number" name="total_allowance" id="total-allowance">
-  </div>
-
-  <div class="form-rowsum">
-    <label for="total-deduction">Total Deduction</label>
-    <input type="number" name="total_deduction" id="total-deduction">
-  </div>
-
-  <div class="form-rowsum">
-    <label for="net-salary">Net Salary</label>
-    <input type="number" name="net_salary" id="net-salary">
-  </div>
-
-  <div class="form-rowsum">
-    <label for="status">Status</label>
-    <select name="status" id="status" >
-      <option value="Paid">Paid</option>
-      <option value="Unpaid" selected>Unpaid</option>
-    </select>
-  </div>
-
-  <button type="submit">Create Payslip</button>
-
-  </div>
-
 </div>
 
 <script>
-  // Set current year
-  const currentYear = new Date().getFullYear();
-  document.getElementById('year').value = currentYear;
+// =====================
+// Set current year & months
+// =====================
+document.getElementById('year').value = new Date().getFullYear();
+const monthSelect = document.getElementById('month');
+const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+for(let i=0;i<=new Date().getMonth();i++){
+  const option = document.createElement('option');
+  option.value = monthNames[i];
+  option.textContent = monthNames[i];
+  monthSelect.appendChild(option);
+}
 
-  // Populate months
-  const monthNames = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
-  const currentMonthIndex = new Date().getMonth();
-  const monthSelect = document.getElementById('month');
+// =====================
+// Load departments dynamically
+// =====================
+function loadDepartments() {
+  fetch('../controller/fetchdept_payslip.php')
+    .then(res => res.json())
+    .then(data => {
+      const deptSelect = document.getElementById('department');
+      data.departments.forEach(dept => {
+        const option = document.createElement('option');
+        option.value = dept.dept_id;
+        option.textContent = dept.department_name;
+        deptSelect.appendChild(option);
+      });
+    });
+}
+loadDepartments();
 
-  for (let i = 0; i <= currentMonthIndex; i++) {
-    const option = document.createElement('option');
-    option.value = monthNames[i];
-    option.textContent = monthNames[i];
-    monthSelect.appendChild(option);
-  }
+// =====================
+// Employee autocomplete with dynamic suggestions
+// =====================
+let employeeList = []; // Full employee list for selected department
+let employeeMap = {};  // Map display string => emp_id
 
-document.addEventListener('click', function(e) {
-  // Add Allowance Row
-  if (e.target.classList.contains('add-allowance-btn')) {
-    const container = document.getElementById('allowances-container');
-    const newRow = e.target.closest('.allowance-row').cloneNode(true);
-    newRow.querySelectorAll('input').forEach(input => input.value = '');
-    container.appendChild(newRow);
-  }
+document.getElementById('department').addEventListener('change', function() {
+  const deptId = this.value;
+  const empInput = document.getElementById('employee');
+  const empDatalist = document.getElementById('employee-list');
+  const hiddenEmpId = document.getElementById('employee_id');
 
-  // Remove Allowance Row
-  if (e.target.classList.contains('remove-allowance-btn')) {
-    const row = e.target.closest('.allowance-row');
-    if (document.querySelectorAll('.allowance-row').length > 1) row.remove();
-  }
+  // Reset input, hidden field, and datalist
+  empInput.value = '';
+  empDatalist.innerHTML = '';
+  hiddenEmpId.value = '';
+  employeeList = [];
+  employeeMap = {};
 
-  // Add Deduction Row
-  if (e.target.classList.contains('add-deduction-btn')) {
-    const container = document.getElementById('deductions-container');
-    const newRow = e.target.closest('.deduction-row').cloneNode(true);
-    newRow.querySelectorAll('input').forEach(input => input.value = '');
-    container.appendChild(newRow);
-  }
-
-  // Remove Deduction Row
-  if (e.target.classList.contains('remove-deduction-btn')) {
-    const row = e.target.closest('.deduction-row');
-    if (document.querySelectorAll('.deduction-row').length > 1) row.remove();
+  if(deptId){
+    fetch(`../controller/get_employees.php?dept_id=${deptId}`)
+      .then(res => res.json())
+      .then(data => {
+        employeeList = data.employees; // store for dynamic filtering
+        updateDatalist(''); // initially populate all employees
+      });
   }
 });
 
-//CALCULATES NET SALARY
-  const basicSalary = document.getElementById('basic-salary');
-  const totalAllowance = document.getElementById('total-allowance');
-  const totalDeduction = document.getElementById('total-deduction');
-  const netSalary = document.getElementById('net-salary');
+// Function to update datalist based on typed filter
+function updateDatalist(filter) {
+  const empDatalist = document.getElementById('employee-list');
+  empDatalist.innerHTML = '';
+  employeeMap = {};
 
-  function calculateNetSalary() {
-    const basic = parseFloat(basicSalary.value) || 0;
-    const allowance = parseFloat(totalAllowance.value) || 0;
-    const deduction = parseFloat(totalDeduction.value) || 0;
+  employeeList
+    .filter(emp => emp.name.toLowerCase().includes(filter.toLowerCase()))
+    .forEach(emp => {
+      const display = `${emp.name} (${emp.emp_id})`;
+      const option = document.createElement('option');
+      option.value = display;
+      empDatalist.appendChild(option);
+      employeeMap[display] = emp.emp_id;
+    });
+}
 
-    const net = basic + allowance - deduction;
-    netSalary.value = net.toFixed(2); // keep 2 decimal places
+// Update hidden emp_id and filter suggestions while typing
+document.getElementById('employee').addEventListener('input', function() {
+  const value = this.value;
+  updateDatalist(value); // dynamic filtering
+  const hiddenEmpId = document.getElementById('employee_id');
+  hiddenEmpId.value = employeeMap[value] || '';
+});
+
+// =====================
+// Show Allowances & Summary on Next
+// =====================
+document.getElementById('next-btn').addEventListener('click', function() {
+  document.getElementById('allow-deduct').style.display = 'block';
+  document.getElementById('summary').style.display = 'block';
+  document.getElementById('allow-deduct').scrollIntoView({ behavior: 'smooth' });
+});
+
+// =====================
+// Dynamic Allowances/Deductions Add/Remove
+// =====================
+document.addEventListener('click', function(e){
+  if(e.target.classList.contains('add-allowance-btn')){
+    const container = document.getElementById('allowances-container');
+    const newRow = e.target.closest('.allowance-row').cloneNode(true);
+    newRow.querySelectorAll('input').forEach(input=>input.value='');
+    container.appendChild(newRow);
   }
+  if(e.target.classList.contains('remove-allowance-btn')){
+    const row = e.target.closest('.allowance-row');
+    if(document.querySelectorAll('.allowance-row').length>1) row.remove();
+  }
+  if(e.target.classList.contains('add-deduction-btn')){
+    const container = document.getElementById('deductions-container');
+    const newRow = e.target.closest('.deduction-row').cloneNode(true);
+    newRow.querySelectorAll('input').forEach(input=>input.value='');
+    container.appendChild(newRow);
+  }
+  if(e.target.classList.contains('remove-deduction-btn')){
+    const row = e.target.closest('.deduction-row');
+    if(document.querySelectorAll('.deduction-row').length>1) row.remove();
+  }
+});
 
-  // Listen for changes
-  basicSalary.addEventListener('input', calculateNetSalary);
-  totalAllowance.addEventListener('input', calculateNetSalary);
-  totalDeduction.addEventListener('input', calculateNetSalary);
+// =====================
+// Net Salary Calculation
+// =====================
+const basicSalary = document.getElementById('basic-salary');
+const totalAllowance = document.getElementById('total-allowance');
+const totalDeduction = document.getElementById('total-deduction');
+const netSalary = document.getElementById('net-salary');
 
+function calculateNetSalary(){
+  const basic = parseFloat(basicSalary.value)||0;
+  const allowance = parseFloat(totalAllowance.value)||0;
+  const deduction = parseFloat(totalDeduction.value)||0;
+  netSalary.value = (basic + allowance - deduction).toFixed(2);
+}
+
+[basicSalary, totalAllowance, totalDeduction].forEach(el=>el.addEventListener('input', calculateNetSalary));
 
 </script>
+
 <?php
 $page_content = ob_get_clean();
 include __DIR__ . '/../layouts/main.php';
+?>
