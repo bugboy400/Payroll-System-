@@ -1,46 +1,48 @@
 <?php
-require_once '../config/db.php'; // your DB connection
+header('Content-Type: application/json');
+require_once '../config/db.php';
 
-if(!isset($_GET['emp_id'])) {
+$emp_id = $_GET['emp_id'] ?? '';
+if (!$emp_id) {
     echo json_encode(['error' => 'Employee ID required']);
     exit;
 }
 
-$emp_id = $_GET['emp_id'];
-
 // Fetch basic salary
-$stmt = $conn->prepare("SELECT basic_salary FROM employees WHERE emp_id=?");
-$stmt->bind_param("i", $emp_id);
+$stmt = $conn->prepare("SELECT basicsal FROM employees_financial WHERE emp_id=?");
+$stmt->bind_param("s", $emp_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $employee = $result->fetch_assoc();
+$basic_salary = $employee['basicsal'] ?? 0;
 
 // Fetch allowances
 $allowances = [];
-$stmt2 = $conn->prepare("SELECT allowance_name, amount FROM allowances WHERE emp_id=?");
-$stmt2->bind_param("i", $emp_id);
+$stmt2 = $conn->prepare("SELECT allowance_name, allowance_amt FROM employees_allowances WHERE emp_id=?");
+$stmt2->bind_param("s", $emp_id);
 $stmt2->execute();
 $res2 = $stmt2->get_result();
-while($row = $res2->fetch_assoc()){
-    $allowances[] = $row;
+while ($row = $res2->fetch_assoc()) {
+    $allowances[] = ['name' => $row['allowance_name'], 'amount' => (float)$row['allowance_amt']];
 }
 
 // Fetch deductions
 $deductions = [];
-$stmt3 = $conn->prepare("SELECT deduction_name, amount FROM deductions WHERE emp_id=?");
-$stmt3->bind_param("i", $emp_id);
+$stmt3 = $conn->prepare("SELECT deduction_name, deduction_amt FROM employees_deductions WHERE emp_id=?");
+$stmt3->bind_param("s", $emp_id);
 $stmt3->execute();
 $res3 = $stmt3->get_result();
-while($row = $res3->fetch_assoc()){
-    $deductions[] = $row;
+while ($row = $res3->fetch_assoc()) {
+    $deductions[] = ['name' => $row['deduction_name'], 'amount' => (float)$row['deduction_amt']];
 }
 
-// Combine data
+// Return JSON
 $response = [
-    'basic_salary' => $employee['basic_salary'] ?? 0,
+    'basic_salary' => (float)$basic_salary,
     'allowances' => $allowances,
     'deductions' => $deductions
 ];
 
 echo json_encode($response);
+$conn->close();
 ?>

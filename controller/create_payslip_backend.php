@@ -1,118 +1,74 @@
 <?php
-// create_payslip_backend.php
-include("../config/db.php"); // Adjust path if needed
 header('Content-Type: application/json');
+require_once '../config/db.php';
 
 $data = json_decode(file_get_contents("php://input"), true);
-
 if (!$data) {
-    echo json_encode(['error' => 'No data received']);
+    echo json_encode(['success' => false, 'message' => 'No data received']);
     exit;
 }
 
-// Extract data from POST
+// Required fields
 $emp_id = $data['employee_id'] ?? '';
 $dept_id = $data['department_id'] ?? '';
-$year = $data['year'] ?? date('Y');
-$month = $data['month'] ?? date('F');
+$year = $data['year'] ?? '';
+$month = $data['month'] ?? '';
 $basic_salary = $data['basic_salary'] ?? 0;
 $total_allowance = $data['total_allowance'] ?? 0;
 $total_deduction = $data['total_deduction'] ?? 0;
 $net_salary = $data['net_salary'] ?? 0;
 $status = $data['status'] ?? 'Unpaid';
 
-$allowances = $data['allowances'] ?? []; // Array of ['name' => '', 'amount' => '']
-$deductions = $data['deductions'] ?? [];
-$other_allowances = $data['other_allowances'] ?? [];
-$other_deductions = $data['other_deductions'] ?? [];
-
-// Check if employee has already paid for this month
-$stmt = $conn->prepare("SELECT * FROM payslips WHERE employee_id = ? AND year = ? AND month = ?");
-$stmt->bind_param("sis", $emp_id, $year, $month);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows > 0) {
-    $existing = $result->fetch_assoc();
-    echo json_encode([
-        'error' => "Salary already paid for $month $year",
-        'payslip' => $existing
-    ]);
+if (!$emp_id || !$dept_id || !$year || !$month) {
+    echo json_encode(['success' => false, 'message' => 'Missing required fields']);
     exit;
 }
 
-$conn->begin_transaction();
+// Check for duplicate payment
+$checkSql = "SELECT payslip_id FROM payslips WHERE employee_id=? AND month=? AND year=?";
+$stmt = $conn->prepare($checkSql);
+$stmt->bind_param("ssi", $emp_id, $month, $year);
+$stmt->execute();
+$stmt->store_result();
+if ($stmt->num_rows > 0) {
+    echo json_encode(['success' => false, 'message' => 'Payslip already exists for this month']);
+    exit;
+}
+$stmt->close();
 
-try {
-    // Insert main payslip
-    $stmt = $conn->prepare("
-        INSERT INTO payslips (employee_id, dept_id, year, month, basic_salary, total_allowance, total_deduction, net_salary, status)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ");
-    $stmt->bind_param("siisddds", $emp_id, $dept_id, $year, $month, $basic_salary, $total_allowance, $total_deduction, $net_salary, $status);
-    $stmt->execute();
-    $payslip_id = $stmt->insert_id;
-    $stmt->close();
+// Insert payslip
+$insertSql = "INSERT INTO payslips (employee_id, dept_id, year, month, basic_salary, total_allowance, total_deduction, net_salary, status) 
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+$stmt = $conn->prepare($insertSql);
+$stmt->bind_param("siisdddds", $emp_id, $dept_id, $year, $month, $basic_salary, $total_allowance, $total_deduction, $net_salary, $status);
+$stmt->execute();
+$payslip_id = $stmt->insert_id;
+$stmt->close();
 
-    // Insert standard allowances
-    if (!empty($allowances)) {
-        $stmt = $conn->prepare("
-            INSERT INTO payslip_allowances (payslip_id, allowance_name, allowance_amt)
-            VALUES (?, ?, ?)
-        ");
-        foreach ($allowances as $allow) {
-            $stmt->bind_param("isd", $payslip_id, $allow['name'], $allow['amount']);
-            $stmt->execute();
-        }
-        $stmt->close();
+// Save allowances
+if (!empty($data['allowances'])) {
+    $allowStmt = $conn->prepare("INSERT INTO payslip_allowances (payslip_id, title, amount) VALUES (?, ?, ?)");
+    foreach ($data['allowances'] as $allow) {
+        $name = $allow['name'];
+        $amt = $allow['amount'];
+        $allowStmt->bind_param("isd", $payslip_id, $name, $amt);
+        $allowStmt->execute();
     }
+    $allowStmt->close();
+}
 
-    // Insert other allowances
-    if (!empty($other_allowances)) {
-        $stmt = $conn->prepare("
-            INSERT INTO payslip_allowances (payslip_id, allowance_name, allowance_amt)
-            VALUES (?, ?, ?)
-        ");
-        foreach ($other_allowances as $allow) {
-            $stmt->bind_param("isd", $payslip_id, $allow['name'], $allow['amount']);
-            $stmt->execute();
-        }
-        $stmt->close();
+// Save deductions
+if (!empty($data['deductions'])) {
+    $deductStmt = $conn->prepare("INSERT INTO payslip_deductions (payslip_id, title, amount) VALUES (?, ?, ?)");
+    foreach ($data['deductions'] as $deduct) {
+        $name = $deduct['name'];
+        $amt = $deduct['amount'];
+        $deductStmt->bind_param("isd", $payslip_id, $name, $amt);
+        $deductStmt->execute();
     }
-
-    // Insert standard deductions
-    if (!empty($deductions)) {
-        $stmt = $conn->prepare("
-            INSERT INTO payslip_deductions (payslip_id, deduction_name, deduction_amt)
-            VALUES (?, ?, ?)
-        ");
-        foreach ($deductions as $ded) {
-            $stmt->bind_param("isd", $payslip_id, $ded['name'], $ded['amount']);
-            $stmt->execute();
-        }
-        $stmt->close();
-    }
-
-    // Insert other deductions
-    if (!empty($other_deductions)) {
-        $stmt = $conn->prepare("
-            INSERT INTO payslip_deductions (payslip_id, deduction_name, deduction_amt)
-            VALUES (?, ?, ?)
-        ");
-        foreach ($other_deductions as $ded) {
-            $stmt->bind_param("isd", $payslip_id, $ded['name'], $ded['amount']);
-            $stmt->execute();
-        }
-        $stmt->close();
-    }
-
-    $conn->commit();
-    echo json_encode(['success' => true, 'message' => 'Payslip saved successfully']);
-
-} catch (Exception $e) {
-    $conn->rollback();
-    echo json_encode(['error' => $e->getMessage()]);
+    $deductStmt->close();
 }
 
 $conn->close();
+echo json_encode(['success' => true, 'message' => 'Payslip created successfully']);
 ?>
