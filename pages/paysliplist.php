@@ -188,7 +188,7 @@ async function loadPayslips(){
             <td>${row.created_at}</td>
             <td>${row.month}</td>
             <td>
-                <select class="status-dropdown">
+                <select class="status-dropdown" readonly disabled>
                     <option value="paid" ${row.status==='paid'?'selected':''}>Paid</option>
                     <option value="pending" ${row.status==='pending'?'selected':''}>Pending</option>
                 </select>

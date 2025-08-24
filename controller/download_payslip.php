@@ -2,13 +2,16 @@
 require_once '../config/db.php';
 require_once '../vendor/autoload.php';
 
-if (!isset($_POST['payslip_id'])) {
+// Accept payslip_id from POST or GET
+$payslip_id = $_POST['payslip_id'] ?? $_GET['payslip_id'] ?? null;
+
+if (!$payslip_id) {
     header('Content-Type: application/json');
     echo json_encode(["success" => false, "message" => "Payslip ID missing"]);
     exit;
 }
 
-$payslip_id = intval($_POST['payslip_id']);
+$payslip_id = intval($payslip_id);
 
 // Fetch payslip data
 $sql = "SELECT p.payslip_id, p.employee_id, e.name AS employee_name, 
@@ -48,4 +51,5 @@ $html = '
 
 $mpdf->WriteHTML($html);
 $mpdf->Output('payslip_' . $payslip_id . '.pdf', 'D');
+exit;
 ?>
