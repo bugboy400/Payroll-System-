@@ -1,12 +1,18 @@
 <?php
 session_start();
 
-// ✅ Redirect if not logged in
-if (!isset($_SESSION['email'])) {
+// ✅ Consistent check with login
+if (!isset($_SESSION['admin_id'])) {
     header("Location: ../layouts/login.php");
     exit();
 }
-include("../includes/auth_check.php"); // make sure path is correct
+
+// Prevent browser caching after logout
+header("Cache-Control: no-cache, no-store, must-revalidate"); 
+header("Pragma: no-cache"); 
+header("Expires: 0"); 
+
+include("../includes/auth_check.php"); 
 $page_title = "Dashboard";
 $page_css = [
     "/payrollself/includes/dashboard.css",  

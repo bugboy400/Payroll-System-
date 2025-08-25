@@ -1,5 +1,6 @@
 <?php
-include "../config/db.php"; // make sure the filename matches exactly
+session_start();
+include "../config/db.php";
 
 if (isset($_POST['login'])) {
     $email    = $conn->real_escape_string($_POST['email']);
@@ -11,8 +12,10 @@ if (isset($_POST['login'])) {
     if ($result && $result->num_rows == 1) {
         $row = $result->fetch_assoc();
 
+        // Verify hashed password
         if (password_verify($password, $row['password'])) {
-            $_SESSION['admin_id']     = $row['admin_id'];
+            // ✅ Added admin_id to session
+            $_SESSION['admin_id']     = $row['admin_id'];  // make sure your table has `id` (or change if it's `admin_id`)
             $_SESSION['full_name']    = $row['full_name'];
             $_SESSION['email']        = $row['email'];
             $_SESSION['company_name'] = $row['company_name'];
