@@ -1,8 +1,9 @@
 <?php
 session_start();
+require_once '../config/db.php'; // <-- make sure db connection is included
 
 // If no active session, redirect to login
-if (!isset($_SESSION['email'])) {
+if (!isset($_SESSION['admin_id'])) {
     header("Location: ../layouts/login.php");
     exit();
 }
@@ -17,6 +18,12 @@ $page_css = [
     "/payrollself/includes/dashboard.css",
     "/payrollself/includes/configuration.css"
 ];
+
+// Fetch company details for this admin
+$stmt = $conn->prepare("SELECT * FROM companydetails WHERE admin_id = ?");
+$stmt->bind_param("i", $_SESSION['admin_id']);
+$stmt->execute();
+$company = $stmt->get_result()->fetch_assoc();
 
 ob_start();
 ?>
@@ -42,17 +49,16 @@ ob_start();
 
     <!-- Tab Content -->
     <div class="tab-content border border-top-0 p-3" id="configTabsContent">
+      <!-- Company Details -->
       <div class="tab-pane fade show active" id="company" role="tabpanel" aria-labelledby="company-tab">
-        <!-- <h5>Company Details</h5> -->
-        <div class="tab-pane fade show active" id="company" role="tabpanel" aria-labelledby="company-tab">
-          <!-- <h5 class="mb-4 text-center">Company Details</h5> -->
 
-          <form class="container" style="max-width: 700px;">
+          <form class="container" style="max-width: 700px;" action="../controller/save_company.php" method="POST">
             <!-- Company Name -->
             <div class="row mb-3 align-items-center">
               <label for="companyName" class="col-sm-4 col-form-label">Company Name</label>
               <div class="col-sm-8">
-                <input type="text" class="form-control" id="companyName" placeholder="Enter company name">
+                <input type="text" class="form-control" id="companyName" name="company_name"
+                       value="<?= htmlspecialchars($company['company_name'] ?? '') ?>" placeholder="Enter company name">
               </div>
             </div>
 
@@ -60,7 +66,8 @@ ob_start();
             <div class="row mb-3 align-items-center">
               <label for="phone" class="col-sm-4 col-form-label">Phone No</label>
               <div class="col-sm-8">
-                <input type="tel" class="form-control" id="phone" placeholder="Enter phone number">
+                <input type="tel" class="form-control" id="phone" name="phone"
+                       value="<?= htmlspecialchars($company['phone'] ?? '') ?>" placeholder="Enter phone number">
               </div>
             </div>
 
@@ -68,15 +75,8 @@ ob_start();
             <div class="row mb-3 align-items-center">
               <label for="email" class="col-sm-4 col-form-label">Email</label>
               <div class="col-sm-8">
-                <input type="email" class="form-control" id="email" placeholder="Enter email">
-              </div>
-            </div>
-
-            <!-- Website URL -->
-            <div class="row mb-3 align-items-center">
-              <label for="website" class="col-sm-4 col-form-label">Website URL</label>
-              <div class="col-sm-8">
-                <input type="url" class="form-control" id="website" placeholder="Enter website URL">
+                <input type="email" class="form-control" id="email" name="email"
+                       value="<?= htmlspecialchars($company['email'] ?? '') ?>" placeholder="Enter email">
               </div>
             </div>
 
@@ -84,7 +84,8 @@ ob_start();
             <div class="row mb-3 align-items-center">
               <label for="address" class="col-sm-4 col-form-label">Company Address</label>
               <div class="col-sm-8">
-                <textarea class="form-control" id="address" rows="2" placeholder="Enter address"></textarea>
+                <textarea class="form-control" id="address" name="address" rows="2"
+                          placeholder="Enter address"><?= htmlspecialchars($company['address'] ?? '') ?></textarea>
               </div>
             </div>
 
@@ -92,7 +93,8 @@ ob_start();
             <div class="row mb-3 align-items-center">
               <label for="city" class="col-sm-4 col-form-label">City</label>
               <div class="col-sm-8">
-                <input type="text" class="form-control" id="city" placeholder="Enter city">
+                <input type="text" class="form-control" id="city" name="city"
+                       value="<?= htmlspecialchars($company['city'] ?? '') ?>" placeholder="Enter city">
               </div>
             </div>
 
@@ -100,7 +102,8 @@ ob_start();
             <div class="row mb-3 align-items-center">
               <label for="state" class="col-sm-4 col-form-label">State</label>
               <div class="col-sm-8">
-                <input type="text" class="form-control" id="state" placeholder="Enter state">
+                <input type="text" class="form-control" id="state" name="state"
+                       value="<?= htmlspecialchars($company['state'] ?? '') ?>" placeholder="Enter state">
               </div>
             </div>
 
@@ -108,7 +111,8 @@ ob_start();
             <div class="row mb-3 align-items-center">
               <label for="postal" class="col-sm-4 col-form-label">Postal Code</label>
               <div class="col-sm-8">
-                <input type="text" class="form-control" id="postal" placeholder="Enter postal code">
+                <input type="text" class="form-control" id="postal" name="postal"
+                       value="<?= htmlspecialchars($company['postal'] ?? '') ?>" placeholder="Enter postal code">
               </div>
             </div>
 
@@ -116,7 +120,8 @@ ob_start();
             <div class="row mb-3 align-items-center">
               <label for="country" class="col-sm-4 col-form-label">Country</label>
               <div class="col-sm-8">
-                <input type="text" class="form-control" id="country" placeholder="Enter country">
+                <input type="text" class="form-control" id="country" name="country"
+                       value="<?= htmlspecialchars($company['country'] ?? '') ?>" placeholder="Enter country">
               </div>
             </div>
 
@@ -125,19 +130,16 @@ ob_start();
               <button type="submit" class="btn btn-primary px-4">Save</button>
             </div>
           </form>
-        </div>
-
       </div>
 
-
+      <!-- Logo and Title -->
       <div class="tab-pane fade" id="logo" role="tabpanel" aria-labelledby="logo-tab">
-
-        <form class="container" style="max-width: 700px;">
+        <form class="container" style="max-width: 700px;" action="../controller/save_logo.php" method="POST" enctype="multipart/form-data">
           <!-- Site Logo -->
           <div class="row mb-3 align-items-center">
             <label for="siteLogo" class="col-sm-4 col-form-label">Site Logo</label>
             <div class="col-sm-8">
-              <input type="file" class="form-control" id="siteLogo" accept="image/*">
+              <input type="file" class="form-control" id="siteLogo" name="siteLogo" accept="image/*">
             </div>
           </div>
 
@@ -145,7 +147,8 @@ ob_start();
           <div class="row mb-3 align-items-center">
             <label for="siteTitle" class="col-sm-4 col-form-label">Title</label>
             <div class="col-sm-8">
-              <input type="text" class="form-control" id="siteTitle" placeholder="Enter site title">
+              <input type="text" class="form-control" id="siteTitle" name="siteTitle"
+                     value="<?= htmlspecialchars($company['title'] ?? '') ?>" placeholder="Enter site title">
             </div>
           </div>
 
@@ -155,11 +158,10 @@ ob_start();
           </div>
         </form>
       </div>
-
-
     </div>
-  </div>
+</div>
 
 <?php
 $page_content = ob_get_clean();
 include __DIR__ . '/../layouts/main.php';
+?>
