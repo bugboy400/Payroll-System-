@@ -1,0 +1,70 @@
+
+#main-content {
+    display: flex;
+    justify-content: center;
+    padding: 30px 10px;
+}
+.quote-card {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    width: 500px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    text-align: center;
+    max-width: 600px;
+}
+.quote-card h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+.quote-form label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+    text-align: left;
+    color: #555;
+}
+.quote-form textarea,
+.quote-form input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+.quote-form textarea:focus,
+.quote-form input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+.btn-save {
+    margin-top: 20px;
+    padding: 12px 25px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.btn-save:hover {
+    background-color: #218838;
+}
+.message {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 15px;
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+.message.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+.message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}

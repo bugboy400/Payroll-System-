@@ -167,3 +167,9 @@ CREATE TABLE IF NOT EXISTS payslip_deductions (
     amount DECIMAL(10,2),
     FOREIGN KEY (payslip_id) REFERENCES payslips(payslip_id) ON DELETE CASCADE
 );
+CREATE TABLE IF NOT EXISTS daily_quotes (
+    quote_id INT AUTO_INCREMENT PRIMARY KEY,
+    quote_text TEXT NOT NULL,
+    quote_author VARCHAR(100) DEFAULT 'Anonymous',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
