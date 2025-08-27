@@ -173,3 +173,13 @@ CREATE TABLE IF NOT EXISTS daily_quotes (
     quote_author VARCHAR(100) DEFAULT 'Anonymous',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE holidays (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    holiday_date DATE NOT NULL,
+    holiday_name VARCHAR(255) NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_holiday (holiday_date, holiday_name)
+);
+

@@ -59,7 +59,7 @@
       </ul>
     </li>
 
-    <li class="nav-item mb-2">
+    <!-- <li class="nav-item mb-2">
       <a class="nav-link submenu-toggle d-flex justify-content-between align-items-center"
          data-bs-toggle="collapse" data-bs-target="#leaveSubmenu" aria-expanded="false">
         <i class="bi bi-calendar-minus me-2"></i>
@@ -72,7 +72,7 @@
         <li class="nav-item"><a href="addleavetype.php" class="nav-link">Add Leave Type</a></li>
         <li class="nav-item"><a href="manageleavetype.php" class="nav-link">Manage Leave Type</a></li>
       </ul>
-    </li>
+    </li> -->
 
     <li class="nav-item mb-2">
       <a class="nav-link submenu-toggle d-flex justify-content-between align-items-center"
@@ -95,8 +95,8 @@
         <i class="bi bi-chevron-down ms-auto"></i>
       </a>
       <ul class="collapse nav flex-column ms-3" id="dailySubmenu">
-        <li class="nav-item"><a href="addnotice.php" class="nav-link">Add Notice</a></li>
-        <li class="nav-item"><a href="managenotice.php" class="nav-link">Manage Notice</a></li>
+        <!-- <li class="nav-item"><a href="addnotice.php" class="nav-link">Add Notice</a></li>
+        <li class="nav-item"><a href="managenotice.php" class="nav-link">Manage Notice</a></li> -->
         <li class="nav-item"><a href="addquote.php" class="nav-link">Add Quote</a></li>
         <li class="nav-item"><a href="managequote.php" class="nav-link">Manage Quote</a></li>
       </ul>
