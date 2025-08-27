@@ -119,7 +119,6 @@ function fetchDepartments() {
                     <td>${dept.designations.join('<br>')}</td>
                     <td>${dept.employee_counts.join('<br>')}</td>
                     <td>
-                        <button class="btn edit"><a href="editdepartment.php?dept_id=${dept.dept_id}">Edit</a></button>
                         <button class="btn delete" type="button" data-id="${dept.dept_id}">Delete</button>
                     </td>
                 `;

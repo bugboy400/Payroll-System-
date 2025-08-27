@@ -9,7 +9,6 @@ require_once '../config/db.php';
 $page_title = "Manage Holiday";
 $page_css = [
   "/payrollself/includes/dashboard.css",
-  "/payrollself/includes/manageholiday.css",
 ];
 
 ob_start();

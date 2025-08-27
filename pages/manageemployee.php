@@ -90,7 +90,6 @@ ob_start();
   font-size: 0.85rem;
 }
 .btn.view { background-color: #3498db; }
-.btn.edit { background-color: #f1c40f; }
 .btn.delete { background-color: #e74c3c; }
 .btn a { color: white; text-decoration: none; }
 .btn:hover { opacity: 0.85; }
@@ -126,7 +125,6 @@ function fetchEmployees() {
                     <td>${emp.designation_name || ''}</td>
                     <td>
                         <button class="btn view"><a href="employeedetails.php?emp_id=${emp.emp_id}">View</a></button>
-                        <button class="btn edit"><a href="editemployee.php?emp_id=${emp.emp_id}">Edit</a></button>
                         <button class="btn delete" type="button" data-id="${emp.emp_id}">Delete</button>
                     </td>
                 `;

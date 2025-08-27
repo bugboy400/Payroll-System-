@@ -102,12 +102,12 @@
       </ul>
     </li>
 
-    <li class="nav-item mb-2">
+    <!-- <li class="nav-item mb-2">
       <a href="activitylog.php" class="nav-link">
         <i class="bi bi-activity me-2"></i>
         <span>Activity Log</span>
       </a>
-    </li>
+    </li> -->
 
     <li class="nav-item mb-2">
       <a class="nav-link submenu-toggle d-flex justify-content-between align-items-center"

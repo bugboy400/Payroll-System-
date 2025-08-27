@@ -1,0 +1,43 @@
+:root {
+  --primary-font: "Segoe UI", Arial, sans-serif;
+  --primary-color: #333;
+  --secondary-color: #4e73df;
+  --background-color: #f4f7fa;
+  --card-bg: #fff;
+  --border-radius: 12px;
+}
+
+/* Global resets */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: var(--primary-font);
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--primary-color);
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--primary-font);
+  color: var(--primary-color);
+}
+
+/* Buttons */
+button {
+  font-family: var(--primary-font);
+}
+
+/* Inputs and textareas */
+input, textarea, select {
+  font-family: var(--primary-font);
+}
+
+/* Cards or containers */
+.container, .left-box, .right-box {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+}

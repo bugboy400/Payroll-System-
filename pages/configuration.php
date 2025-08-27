@@ -39,12 +39,12 @@ ob_start();
           Company Details
         </button>
       </li>
-      <li class="nav-item" role="presentation">
+      <!-- <li class="nav-item" role="presentation">
         <button class="nav-link" id="logo-tab" data-bs-toggle="tab" data-bs-target="#logo" type="button" role="tab"
           aria-controls="logo" aria-selected="false">
           Logo and Title
         </button>
-      </li>
+      </li> -->
     </ul>
 
     <!-- Tab Content -->

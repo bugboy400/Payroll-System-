@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
    <!-- Global CSS -->
+    <link rel="stylesheet" href="/payrollself/includes/global.css">
 <link rel="stylesheet" href="/payrollself/includes/style.css">
 
 <!-- Page-specific CSS -->

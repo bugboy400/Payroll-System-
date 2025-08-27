@@ -1,0 +1,200 @@
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  margin: 20px;
+  background: #f4f7fa;
+  color: #333;
+}
+
+.page-heading {
+  font-size: 1.8rem;
+  margin-bottom: 25px;
+  font-weight: 600;
+}
+
+.container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.left-box {
+  width: 260px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.left-box img {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #4e73df;
+}
+
+.left-box h2 input {
+  font-size: 1.3rem;
+  font-weight: 600;
+  border: 1px solid #ddd;
+  padding: 6px 8px;
+  width: 100%;
+  border-radius: 6px;
+}
+
+.sub-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.tab-btn {
+  padding: 10px;
+  border: none;
+  background: #f0f0f0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.tab-btn.active, .tab-btn:hover {
+  background: #4e73df;
+  color: #fff;
+}
+
+.right-box {
+  flex: 1;
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.tab-content {
+  display: none; /* hide all tabs by default */
+}
+
+.tab-content.active {
+  display: block; /* show active tab */
+}
+
+.tab-content h4 {
+  margin-bottom: 15px;
+  border-bottom: 2px solid #4e73df;
+  display: inline-block;
+  padding-bottom: 5px;
+  color: #4e73df;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 20px;
+  margin-bottom: 20px;
+}
+
+.detail-grid p {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.95rem;
+}
+
+.detail-grid input, .detail-grid select, .detail-grid textarea {
+  margin-top: 5px;
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.detail-grid textarea {
+  resize: vertical;
+  min-height: 50px;
+}
+
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.styled-table th, .styled-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.styled-table th {
+  background: #4e73df;
+  color: #fff;
+}
+
+.styled-table tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+.allowance-item, .deduction-item {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.allowance-item select, .deduction-item select,
+.allowance-item input, .deduction-item input {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+}
+
+.allowance-item button, .deduction-item button {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.allowance-item button:hover, .deduction-item button:hover {
+  opacity: 0.85;
+}
+
+#add-allowance, #add-deduction {
+  margin-top: 10px;
+  background: #4e73df;
+  color: #fff;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+#add-allowance:hover, #add-deduction:hover {
+  opacity: 0.85;
+}
+
+.save-btn {
+  background: #1cc88a;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.save-btn:hover {
+  opacity: 0.9;
+}
