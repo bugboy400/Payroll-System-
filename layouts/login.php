@@ -16,25 +16,192 @@ unset($_SESSION['register_success'], $_SESSION['login_error'], $_SESSION['forgot
 <title>Admin Login/Register</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
-body{font-family:Arial,sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;background:#050505;}
-.form-wrapper{background:#DFE211;padding:2rem;border-radius:10px;width:450px;box-shadow:0 4px 12px rgba(0,0,0,0.1);}
-h2{text-align:center;margin-bottom:1.2rem;color:#333;}
-form{display:flex;flex-direction:column;gap:1rem;}
-.form-row{display:flex;align-items:center;gap:10px;}
-.form-row label{width:120px;font-weight:bold;color:#444;}
-.form-row input{flex:1;padding:0.6rem;border:1px solid #ccc;border-radius:6px;}
-.radio-group{display:flex;gap:20px;}
-.password-wrapper{position:relative;}
-.password-wrapper i{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:#555;}
-button{padding:0.7rem;background:#28a745;color:#fff;border:none;border-radius:6px;font-weight:bold;cursor:pointer;transition:background 0.3s;margin-top:1rem;}
-button:hover{background:#218838;}
-.toggle-link{color:#007bff;cursor:pointer;font-weight:bold;}
-.toggle-link:hover{text-decoration:underline;}
-#loginForm,#registerForm,#forgotForm{display:none;}
-#loginForm.active,#registerForm.active,#forgotForm.active{display:block;}
-.success-message,.error-message{padding:10px;border-radius:5px;text-align:center;margin-bottom:10px;font-weight:bold;opacity:1;transition:opacity 1s ease-out;}
-.success-message{background:#d4edda;color:#155724;border:1px solid #c3e6cb;}
-.error-message{background:#f8d7da;color:#721c24;border:1px solid #f5c6cb;}
+/* Body & Layout */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background: linear-gradient(135deg, #1a1a2e, #162447);
+    transition: background 0.5s ease;
+}
+
+.form-wrapper {
+    background: #f0f4f8;
+    padding: 2.5rem;
+    border-radius: 15px;
+    width: 450px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.form-wrapper:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #1b1b3a;
+    font-size: 2rem;
+    letter-spacing: 1px;
+}
+
+/* Form Fields */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.form-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
+
+.form-row label {
+    width: 120px;
+    font-weight: 600;
+    color: #1b1b3a;
+    letter-spacing: 0.5px;
+}
+
+/* Normal Inputs */
+.form-row input[type="text"],
+.form-row input[type="email"],
+.password-wrapper input[type="password"] {
+    flex: 1;
+    padding: 0.65rem 0.9rem;
+    border: 1px solid #bbb;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+.form-row input:focus {
+    border-color: #4ecca3;
+    box-shadow: 0 0 8px rgba(78,204,163,0.3);
+    outline: none;
+}
+
+/* Password Field */
+.password-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+    flex: 1;
+}
+.password-wrapper input[type="password"] {
+    padding-right: 2.5rem;
+}
+.password-wrapper i {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #888;
+    font-size: 1.1rem;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+.password-wrapper i:hover {
+    color: #4ecca3;
+    transform: scale(1.2);
+}
+
+/* Radio Buttons */
+.radio-group {
+    display: flex;
+    gap: 20px;
+}
+.radio-group input[type="radio"] {
+    accent-color: #4ecca3;
+}
+
+/* Buttons */
+button {
+    padding: 0.75rem;
+    background: #4ecca3;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+button:hover {
+    background: #3bb78f;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(78,204,163,0.4);
+}
+
+/* Toggle Links */
+.toggle-link {
+    color: #4ecca3;
+    cursor: pointer;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+.toggle-link:hover {
+    color: #3bb78f;
+    text-decoration: underline;
+}
+
+/* Form Visibility */
+#loginForm, #registerForm, #forgotForm {
+    display: none;
+    animation: fadeIn 0.5s ease forwards;
+}
+#loginForm.active, #registerForm.active, #forgotForm.active {
+    display: block;
+}
+
+/* Messages */
+.success-message, .error-message {
+    padding: 10px;
+    border-radius: 6px;
+    text-align: center;
+    margin-bottom: 12px;
+    font-weight: 600;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.8s ease-out, transform 0.5s ease-out;
+}
+.success-message {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+.error-message {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+/* Center bottom links */
+form p {
+    display: flex;
+    justify-content: center;
+    margin: 0.5rem 0 0 0;
+}
+
+
+/* Fade Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+    .form-wrapper {
+        width: 90%;
+        padding: 2rem;
+    }
+}
+
 </style>
 </head>
 <body>
