@@ -11,6 +11,54 @@ include("../config/db.php");
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $emp_id = $_POST['emp_id'];
 
+   // ===== Handle Photo Upload =====
+if (isset($_FILES['photo']) && $_FILES['photo']['error'] == 0) {
+    $uploadDir = "../uploads/employees/"; // make sure this folder exists
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
+
+    // Allowed image types
+    $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+    if (in_array($_FILES['photo']['type'], $allowedTypes)) {
+
+        // ✅ Get old photo path
+        $stmtOld = $conn->prepare("SELECT photo FROM employees_personal WHERE emp_id=?");
+        $stmtOld->bind_param("s", $emp_id);
+        $stmtOld->execute();
+        $stmtOld->bind_result($oldPhoto);
+        $stmtOld->fetch();
+        $stmtOld->close();
+
+        // Determine file name to use
+        if (!empty($oldPhoto) && $oldPhoto !== "uploads/employees/default.png") {
+            $fileName = basename($oldPhoto); // reuse existing file name
+        } else {
+            $fileExt = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
+            $fileName = $emp_id . "." . $fileExt; // new file name based on emp_id
+        }
+
+        $fileTmp = $_FILES['photo']['tmp_name'];
+        $filePath = $uploadDir . $fileName;
+        $dbPath = "uploads/employees/" . $fileName;
+
+        // Move new file and replace old one
+        if (move_uploaded_file($fileTmp, $filePath)) {
+            // Update DB with same path
+            $stmt = $conn->prepare("UPDATE employees_personal SET photo=? WHERE emp_id=?");
+            $stmt->bind_param("ss", $dbPath, $emp_id);
+            $stmt->execute();
+            $stmt->close();
+
+            // ✅ Delete old file if different (not default)
+            if (!empty($oldPhoto) && file_exists("../" . $oldPhoto) && $oldPhoto !== $dbPath && $oldPhoto !== "uploads/employees/default.png") {
+                unlink("../" . $oldPhoto);
+            }
+        }
+    }
+}
+
+
     // ===== Personal Details =====
     $name = $_POST['name'];
     $fatherName = $_POST['fatherName'];

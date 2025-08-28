@@ -64,14 +64,23 @@ $deduction_types_res = $conn->query("SELECT DISTINCT deduction_name FROM employe
 
 <div id="main-content">
     <h3 class="page-heading">Edit Employee Details</h3>
-    <form action="../controller/update_employee.php" method="POST">
+    <form action="../controller/update_employee.php" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="emp_id" value="<?php echo $employee['emp_id']; ?>">
 
         <div class="container">
 
             <!-- Left Box -->
             <div class="left-box">
-                <img src="<?php echo !empty($employee['photo']) ? $employee['photo'] : '../assets/default.png'; ?>" alt="Profile Picture" style="width:150px;height:150px;border-radius:50%;">
+                <div class="photo-container">
+    <img src="../<?php echo htmlspecialchars($employee['photo']); ?>" alt="Employee Photo" class="employee-photo">
+    <div class="overlay">
+        <label for="photo" class="change-photo-label">
+            <i class="fa fa-camera"></i> Change Image
+        </label>
+    </div>
+    <input type="file" name="photo" id="photo" accept="image/*" style="display:none;">
+</div>
+
                 <h2>
                     <input type="text" name="name" value="<?php echo htmlspecialchars($employee['name']); ?>" required>
                 </h2>
@@ -207,6 +216,21 @@ $deduction_types_res = $conn->query("SELECT DISTINCT deduction_name FROM employe
 </div>
 
 <script>
+
+    const photoInput = document.getElementById('photo');
+const employeePhoto = document.querySelector('.employee-photo');
+
+photoInput.addEventListener('change', function() {
+    const file = this.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            employeePhoto.src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+    }
+});
+
 // Tab switching
 const tabButtons = document.querySelectorAll('.tab-btn');
 const tabContents = document.querySelectorAll('.tab-content');
