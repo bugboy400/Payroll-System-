@@ -1,34 +1,32 @@
 <?php
 session_start();
-include "../config/db.php";
+require_once '../config/db.php';
 
-if (isset($_POST['login'])) {
-    $email    = $conn->real_escape_string($_POST['email']);
+if(isset($_POST['login'])){
+    $email = trim($_POST['email']);
     $password = $_POST['password'];
 
-    $sql = "SELECT * FROM admins WHERE email='$email' LIMIT 1";
-    $result = $conn->query($sql);
+    $stmt = $conn->prepare("SELECT admin_id, full_name, email, password FROM admins WHERE email=? LIMIT 1");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $res = $stmt->get_result();
 
-    if ($result && $result->num_rows == 1) {
-        $row = $result->fetch_assoc();
-
-        // Verify hashed password
-        if (password_verify($password, $row['password'])) {
-            // ✅ Added admin_id to session
-            $_SESSION['admin_id']     = $row['admin_id'];  // make sure your table has `id` (or change if it's `admin_id`)
-            $_SESSION['full_name']    = $row['full_name'];
-            $_SESSION['email']        = $row['email'];
-            $_SESSION['company_name'] = $row['company_name'];
-
+    if($res && $res->num_rows===1){
+        $admin = $res->fetch_assoc();
+        if(password_verify($password, $admin['password'])){
+            $_SESSION['admin_id'] = $admin['admin_id'];
+            $_SESSION['full_name'] = $admin['full_name'];
+            $_SESSION['email'] = $admin['email'];
             header("Location: ../pages/dashboard.php");
             exit();
         } else {
-            $_SESSION['login_error'] = "Invalid password!";
+            $_SESSION['form_error'] = ['password' => 'Invalid password'];
+            $_SESSION['form_data'] = ['email'=>$email];
         }
     } else {
-        $_SESSION['login_error'] = "No account found with this email!";
+        $_SESSION['form_error'] = ['email' => 'No account with this email'];
+        $_SESSION['form_data'] = ['email'=>$email];
     }
-
     header("Location: ../layouts/login.php");
     exit();
 }
