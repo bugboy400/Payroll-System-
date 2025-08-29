@@ -6,8 +6,9 @@ if (session_status() === PHP_SESSION_NONE) {
 <nav class="navbar navbar-custom fixed-top px-4 bg-dark">
   <!-- ✅ Company Name on left -->
   <a href="#" class="navbar-brand text-warning fw-bold">
-    <?= htmlspecialchars($_SESSION['company_name'] ?? 'Company Name') ?>
-  </a>
+  <?= htmlspecialchars($_SESSION['company_name'] ?? 'Company Name') ?>
+</a>
+
 
   <!-- ✅ User dropdown on right -->
   <div class="ms-auto dropdown">

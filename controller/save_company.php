@@ -7,8 +7,7 @@ if (!isset($_SESSION['admin_id'])) {
     exit();
 }
 
-$admin_id = $_SESSION['admin_id'];
-
+$admin_id     = $_SESSION['admin_id'];
 $company_name = $_POST['company_name'] ?? '';
 $phone        = $_POST['phone'] ?? '';
 $email        = $_POST['email'] ?? '';
@@ -40,6 +39,13 @@ if ($res->num_rows > 0) {
     $stmt->bind_param("isssssssss", $admin_id, $company_name, $phone, $email, $website, $address, $city, $state, $postal, $country);
     $stmt->execute();
 }
-header("Location: ../pages/dashboard.php"); 
+/* ✅ Update admins table as well */
+$stmt = $conn->prepare("UPDATE admins SET company_name=? WHERE admin_id=?");
+$stmt->bind_param("si", $company_name, $admin_id);
+$stmt->execute();
+// ✅ Update session so navbar reflects immediately
+$_SESSION['company_name'] = $company_name;
 
+header("Location: ../pages/dashboard.php"); 
 exit();
+?>

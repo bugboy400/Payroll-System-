@@ -62,6 +62,13 @@ if(isset($_POST['register'])){
     $stmt=$conn->prepare("INSERT INTO admins(full_name,company_name,email,gender,password) VALUES(?,?,?,?,?)");
     $stmt->bind_param("sssss",$full_name,$company_name,$email,$gender,$hashed);
     if($stmt->execute()){
+        $admin_id = $stmt->insert_id; // ✅ Get the new admin_id
+
+        // ✅ Insert into companydetails as well
+        $stmt2 = $conn->prepare("INSERT INTO companydetails (admin_id, company_name, email) VALUES (?, ?, ?)");
+        $stmt2->bind_param("iss", $admin_id, $company_name, $email);
+        $stmt2->execute();
+
         $_SESSION['register_success']="Admin registered successfully";
     } else {
         $_SESSION['register_error']="Failed to register";
