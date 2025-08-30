@@ -350,3 +350,9 @@ CREATE TABLE `payslips` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2025-08-27 16:11:47
+
+ALTER TABLE payslips
+ADD COLUMN pf_amount DECIMAL(10,2) DEFAULT 0 AFTER deduction_amt,
+ADD COLUMN pf_percent DECIMAL(5,2) DEFAULT 0 AFTER pf_amount,
+ADD COLUMN tax_amount DECIMAL(10,2) DEFAULT 0 AFTER pf_percent,
+ADD COLUMN tax_percent DECIMAL(5,2) DEFAULT 0 AFTER tax_amount;

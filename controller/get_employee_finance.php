@@ -8,15 +8,15 @@ if (!$emp_id) {
     exit;
 }
 
-// Fetch basic salary
+// ===== Fetch basic salary =====
 $stmt = $conn->prepare("SELECT basicsal FROM employees_financial WHERE emp_id=?");
 $stmt->bind_param("s", $emp_id);
 $stmt->execute();
 $result = $stmt->get_result();
-$employee = $result->fetch_assoc();
-$basic_salary = $employee['basicsal'] ?? 0;
+$employee_financial = $result->fetch_assoc();
+$basic_salary = $employee_financial['basicsal'] ?? 0;
 
-// Fetch allowances
+// ===== Fetch allowances =====
 $allowances = [];
 $stmt2 = $conn->prepare("SELECT allowance_name, allowance_amt FROM employees_allowances WHERE emp_id=?");
 $stmt2->bind_param("s", $emp_id);
@@ -26,7 +26,7 @@ while ($row = $res2->fetch_assoc()) {
     $allowances[] = ['name' => $row['allowance_name'], 'amount' => (float)$row['allowance_amt']];
 }
 
-// Fetch deductions
+// ===== Fetch deductions =====
 $deductions = [];
 $stmt3 = $conn->prepare("SELECT deduction_name, deduction_amt FROM employees_deductions WHERE emp_id=?");
 $stmt3->bind_param("s", $emp_id);
@@ -36,11 +36,22 @@ while ($row = $res3->fetch_assoc()) {
     $deductions[] = ['name' => $row['deduction_name'], 'amount' => (float)$row['deduction_amt']];
 }
 
-// Return JSON
+// ===== Fetch personal info =====
+$stmt4 = $conn->prepare("SELECT gender, maritalstatus FROM employees_personal WHERE emp_id=?");
+$stmt4->bind_param("s", $emp_id);
+$stmt4->execute();
+$res4 = $stmt4->get_result();
+$personal = $res4->fetch_assoc();
+$gender = $personal['gender'] ?? '';
+$marital_status = $personal['maritalstatus'] ?? '';
+
+// ===== Return JSON =====
 $response = [
     'basic_salary' => (float)$basic_salary,
     'allowances' => $allowances,
-    'deductions' => $deductions
+    'deductions' => $deductions,
+    'gender' => $gender,
+    'marital_status' => $marital_status
 ];
 
 echo json_encode($response);
