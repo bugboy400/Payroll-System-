@@ -120,10 +120,12 @@ $html .= '<div class="table-section"><table>
 <td><strong>Employee ID:</strong> '.htmlspecialchars($payslip['employee_id']).'</td></tr>
 <tr><td><strong>Department:</strong> '.htmlspecialchars($payslip['department_name']).'</td>
 <td><strong>Designation:</strong> '.htmlspecialchars($payslip['designation_name']).'</td></tr>
-<tr><td><strong>Month/Year:</strong> '.htmlspecialchars($payslip['month'].' '.$payslip['year']).'</td>
-<td><strong>Status:</strong> '.htmlspecialchars($payslip['status']).'</td></tr>
-<tr><td colspan="2"><strong>Created At:</strong> '.htmlspecialchars($payslip['created_at']).'</td></tr>
+<tr><td><strong>Basic Salary:</strong> Rs. '.number_format($payslip['basic_salary'], 2).'</td>
+<td><strong>Month/Year:</strong> '.htmlspecialchars($payslip['month'].' '.$payslip['year']).'</td></tr>
+<tr><td><strong>Status:</strong> '.htmlspecialchars($payslip['status']).'</td>
+<td><strong>Created At:</strong> '.htmlspecialchars($payslip['created_at']).'</td></tr>
 </table></div>';
+
 
 // --- Allowances Table ---
 $html .= '<div class="table-section"><h4>Allowances</h4><table><tr><th>Allowance</th><th>Amount (Rs.)</th></tr>';
@@ -142,6 +144,7 @@ foreach($deductions_list as $row){
 $html .= '</table></div>';
 
 // --- Totals ---
+$basic_salary = floatval($payslip['basic_salary'] ?? 0);
 $total_allowance = floatval($payslip['total_allowance'] ?? 0);
 $total_deduction = floatval($payslip['total_deduction'] ?? 0);
 $net_salary = floatval($payslip['net_salary'] ?? 0);
