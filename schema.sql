@@ -33,7 +33,7 @@ CREATE TABLE `admins` (
   `reset_expires` datetime DEFAULT NULL,
   PRIMARY KEY (`admin_id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -108,7 +108,7 @@ CREATE TABLE `deleted_payslips` (
   `status` varchar(50) DEFAULT NULL,
   `deleted_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -140,7 +140,7 @@ CREATE TABLE `designations` (
   PRIMARY KEY (`designation_id`),
   UNIQUE KEY `dept_id` (`dept_id`,`designation_name`),
   CONSTRAINT `designations_ibfk_1` FOREIGN KEY (`dept_id`) REFERENCES `departments` (`dept_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -158,7 +158,7 @@ CREATE TABLE `employees_allowances` (
   PRIMARY KEY (`id`),
   KEY `emp_id` (`emp_id`),
   CONSTRAINT `employees_allowances_ibfk_1` FOREIGN KEY (`emp_id`) REFERENCES `employees_personal` (`emp_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -198,7 +198,7 @@ CREATE TABLE `employees_deductions` (
   PRIMARY KEY (`id`),
   KEY `emp_id` (`emp_id`),
   CONSTRAINT `employees_deductions_ibfk_1` FOREIGN KEY (`emp_id`) REFERENCES `employees_personal` (`emp_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -256,7 +256,7 @@ CREATE TABLE `holidays` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_holiday` (`holiday_date`,`holiday_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -283,13 +283,15 @@ DROP TABLE IF EXISTS `payslip_allowances`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `payslip_allowances` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `payslip_id` int(11) NOT NULL,
-  `allowance_name` varchar(100) NOT NULL,
-  `allowance_amt` decimal(10,2) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `payslip_id` (`payslip_id`),
-  CONSTRAINT `payslip_allowances_ibfk_1` FOREIGN KEY (`payslip_id`) REFERENCES `payslips` (`payslip_id`) ON DELETE CASCADE
+  `employee_id` varchar(20) NOT NULL,
+  `month` varchar(20) NOT NULL,
+  `home_allowance` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `health_allowance` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `overtime_allowance` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `festive_allowance` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `other_allowance` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `other_allowance_name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`employee_id`,`month`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -301,13 +303,16 @@ DROP TABLE IF EXISTS `payslip_deductions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `payslip_deductions` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `payslip_id` int(11) NOT NULL,
-  `deduction_name` varchar(100) NOT NULL,
-  `deduction_amt` decimal(10,2) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `payslip_id` (`payslip_id`),
-  CONSTRAINT `payslip_deductions_ibfk_1` FOREIGN KEY (`payslip_id`) REFERENCES `payslips` (`payslip_id`) ON DELETE CASCADE
+  `employee_id` varchar(20) NOT NULL,
+  `month` varchar(20) NOT NULL,
+  `provident_fund` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `leave` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `tax` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `other_deduction` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `other_deduction_name` varchar(255) DEFAULT NULL,
+  `pf_percent` decimal(5,2) NOT NULL DEFAULT 0.00,
+  `tax_percent` decimal(5,2) NOT NULL DEFAULT 0.00,
+  PRIMARY KEY (`employee_id`,`month`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -319,25 +324,18 @@ DROP TABLE IF EXISTS `payslips`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `payslips` (
-  `payslip_id` int(11) NOT NULL AUTO_INCREMENT,
   `employee_id` varchar(20) NOT NULL,
   `dept_id` int(11) NOT NULL,
   `year` int(11) NOT NULL,
   `month` varchar(20) NOT NULL,
-  `basic_salary` decimal(10,2) NOT NULL,
-  `total_allowance` decimal(10,2) NOT NULL,
-  `total_deduction` decimal(10,2) NOT NULL,
-  `net_salary` decimal(10,2) NOT NULL,
-  `status` enum('Paid','Unpaid') DEFAULT 'Unpaid',
+  `basic_salary` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `total_allowance` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `total_deduction` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `net_salary` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `status` varchar(20) NOT NULL DEFAULT 'Unpaid',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`payslip_id`),
-  UNIQUE KEY `unique_payment` (`employee_id`,`month`,`year`),
-  KEY `dept_id` (`dept_id`),
-  KEY `idx_employee` (`employee_id`),
-  KEY `idx_month_year` (`month`,`year`),
-  CONSTRAINT `payslips_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees_personal` (`emp_id`) ON DELETE CASCADE,
-  CONSTRAINT `payslips_ibfk_2` FOREIGN KEY (`dept_id`) REFERENCES `departments` (`dept_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  PRIMARY KEY (`employee_id`,`year`,`month`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -349,10 +347,4 @@ CREATE TABLE `payslips` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-08-27 16:11:47
-
-ALTER TABLE payslips
-ADD COLUMN pf_amount DECIMAL(10,2) DEFAULT 0 AFTER deduction_amt,
-ADD COLUMN pf_percent DECIMAL(5,2) DEFAULT 0 AFTER pf_amount,
-ADD COLUMN tax_amount DECIMAL(10,2) DEFAULT 0 AFTER pf_percent,
-ADD COLUMN tax_percent DECIMAL(5,2) DEFAULT 0 AFTER tax_amount;
+-- Dump completed on 2025-08-31 19:38:18

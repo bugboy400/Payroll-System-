@@ -7,10 +7,10 @@ if (!isset($_SESSION['email'])) {
     exit();
 }
 
-// Prevent browser from caching this page
-header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1
-header("Pragma: no-cache"); // HTTP 1.0
-header("Expires: 0"); // Proxies
+// Prevent caching
+header("Cache-Control: no-cache, no-store, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
 
 $page_title = "Create Payslip";
 $page_css = [
@@ -35,7 +35,7 @@ ob_start();
           </select>
         </div>
 
-        <!-- Employee (Searchable) -->
+        <!-- Employee -->
         <div class="col-md-3">
           <label for="employee" class="form-label fw-bold">Employee</label>
           <input list="employee-list" id="employee" class="form-control p-2" placeholder="Search Employee">
@@ -64,6 +64,15 @@ ob_start();
   </div>
 </div>
 
+<!-- Employee Info -->
+<div id="employee-info" style="display:none; margin-top:15px; background:#f9f9f9; padding:10px; border-radius:6px;">
+  <h5>Employee Details</h5>
+  <p><strong>Name:</strong> <span id="emp-name"></span></p>
+  <p><strong>Employee ID:</strong> <span id="emp-id-display"></span></p>
+  <p><strong>Gender:</strong> <span id="emp-gender"></span></p>
+  <p><strong>Marital Status:</strong> <span id="emp-marital"></span></p>
+</div>
+
 <!-- Allowances & Deductions -->
 <div id="allow-deduct" class="container-fluid mt-4" style="display: none;">
   <div class="row g-4">
@@ -71,25 +80,13 @@ ob_start();
     <div class="col-lg-6">
       <div class="form-section">
         <h5>Allowances</h5>
-        <div id="allowances-container">
-          <div class="form-row allowance-row">
-            <select name="allowance" class="allowancename">
-              <option value="homeallowance">Home Allowance</option>
-              <option value="healthallowance">Health Allowance</option>
-              <option value="overtimeallowance">OT Allowance</option>
-              <option value="festiveallowance">Festive Allowance</option>
-            </select>
-            <input type="number" name="allowanceamt" class="allowanceamt" placeholder="Amount">
-            <button type="button" class="btn-icon add-btn add-allowance-btn">+</button>
-            <button type="button" class="btn-icon remove-btn remove-allowance-btn">×</button>
-          </div>
-        </div>
+        <div id="allowances-container"></div>
 
         <hr class="mt-4">
         <h6 class="mt-3">Other Allowance</h6>
         <div class="row mt-2">
           <div class="col-6"><input type="text" name="otherallowancetitle" class="form-control" placeholder="Title"></div>
-          <div class="col-6"><input type="number" name="otherallowanceamt" class="form-control" placeholder="Amount"></div>
+          <div class="col-6"><input type="number" name="otherallowanceamt" class="form-control" placeholder="Amount" value="0"></div>
         </div>
       </div>
     </div>
@@ -98,23 +95,13 @@ ob_start();
     <div class="col-lg-6">
       <div class="form-section">
         <h5>Deductions</h5>
-        <div id="deductions-container">
-          <div class="form-row deduction-row">
-            <select name="deduction" class="deductionname">
-              <option value="providentfund">Provident Fund</option>
-              <option value="leave">Leave</option>
-            </select>
-            <input type="number" name="deductionamt" class="deductionamt" placeholder="Amount">
-            <button type="button" class="btn-icon add-btn add-deduction-btn">+</button>
-            <button type="button" class="btn-icon remove-btn remove-deduction-btn">×</button>
-          </div>
-        </div>
+        <div id="deductions-container"></div>
 
         <hr class="mt-4">
         <h6 class="mt-3">Other Deduction</h6>
         <div class="row mt-2">
           <div class="col-6"><input type="text" name="otherdeductiontitle" class="form-control" placeholder="Title"></div>
-          <div class="col-6"><input type="number" name="otherdeductionamt" class="form-control" placeholder="Amount"></div>
+          <div class="col-6"><input type="number" name="otherdeductionamt" class="form-control" placeholder="Amount" value="0"></div>
         </div>
       </div>
     </div>
@@ -172,202 +159,320 @@ loadDepartments();
 // =====================
 // Employee Autocomplete
 // =====================
+const empInput = document.getElementById('employee');
+const empDatalist = document.getElementById('employee-list');
+const hiddenEmpId = document.getElementById('employee_id');
 let employeeList = [];
+
 document.getElementById('department').addEventListener('change', function(){
   const deptId = this.value;
-  const empInput = document.getElementById('employee');
-  const empDatalist = document.getElementById('employee-list');
-  const hiddenEmpId = document.getElementById('employee_id');
+  empInput.value = '';
+  empDatalist.innerHTML = '';
+  hiddenEmpId.value = '';
+  employeeList = [];
+  if(!deptId) return;
 
-  empInput.value = ''; empDatalist.innerHTML = ''; hiddenEmpId.value = ''; employeeList = [];
-
-  if(deptId){
-    fetch(`../controller/get_employees.php?dept_id=${deptId}`)
-      .then(res=>res.json())
-      .then(data=>{ employeeList = data.employees; updateDatalist(''); });
-  }
+  fetch(`../controller/get_employees.php?dept_id=${deptId}`)
+    .then(res=>res.json())
+    .then(data => {
+      employeeList = data.employees;
+      updateDatalist('');
+    });
 });
 
 function updateDatalist(filter){
-  const empDatalist = document.getElementById('employee-list');
   empDatalist.innerHTML = '';
   employeeList.filter(emp=>emp.name.toLowerCase().includes(filter.toLowerCase()))
-    .forEach(emp=>{ 
-      const opt = document.createElement('option'); 
-      opt.value = `${emp.name} (${emp.emp_id})`; 
-      empDatalist.appendChild(opt); 
+    .forEach(emp=>{
+      const opt = document.createElement('option');
+      opt.value = emp.name;
+      opt.dataset.id = emp.emp_id;
+      empDatalist.appendChild(opt);
     });
 }
 
-document.getElementById('employee').addEventListener('input', function(){
-  const val = this.value.trim(); 
-  const hiddenEmpId = document.getElementById('employee_id');
-  const match = val.match(/\(([^)]+)\)$/);
-  hiddenEmpId.value = match ? match[1] : '';
-  updateDatalist(val);
+empInput.addEventListener('input', function(){
+  const emp = employeeList.find(e=>e.name.toLowerCase() === empInput.value.toLowerCase());
+  hiddenEmpId.value = emp ? emp.emp_id : '';
 });
 
-// =====================
-// Next Button: Fetch and Populate Employee Data
-// =====================
-document.getElementById('next-btn').addEventListener('click', function(){
-  const empId = document.getElementById('employee_id').value;
-  if(!empId){ alert('Select employee first'); return; }
-
-  const allowDeduct = document.getElementById('allow-deduct');
-  const summary = document.getElementById('summary');
-  allowDeduct.style.display='block';
-  summary.style.display='block';
-  allowDeduct.scrollIntoView({behavior:'smooth'});
-
-  fetch(`/payrollself/controller/get_employee_finance.php?emp_id=${empId}`)
-    .then(res=>res.json())
-    .then(data=>{
-      document.getElementById('basic-salary').value = data.basic_salary || 0;
-
-      const allowContainer = document.getElementById('allowances-container');
-      allowContainer.innerHTML = '';
-      if(data.allowances.length){
-        data.allowances.forEach(a=>{
-          const row = document.createElement('div');
-          row.className = 'form-row allowance-row';
-          row.innerHTML = `
-            <select class="allowancename">
-              <option value="homeallowance">Home Allowance</option>
-              <option value="healthallowance">Health Allowance</option>
-              <option value="overtimeallowance">OT Allowance</option>
-              <option value="festiveallowance">Festive Allowance</option>
-            </select>
-            <input type="number" class="allowanceamt" value="${a.amount}">
-            <button type="button" class="btn-icon add-btn add-allowance-btn">+</button>
-            <button type="button" class="btn-icon remove-btn remove-allowance-btn">×</button>
-          `;
-          row.querySelector('.allowancename').value = a.name;
-          allowContainer.appendChild(row);
-        });
-      }
-
-      const deductContainer = document.getElementById('deductions-container');
-      deductContainer.innerHTML = '';
-      if(data.deductions.length){
-        data.deductions.forEach(d=>{
-          const row = document.createElement('div');
-          row.className = 'form-row deduction-row';
-          row.innerHTML = `
-            <select class="deductionname">
-              <option value="providentfund">Provident Fund</option>
-              <option value="leave">Leave</option>
-            </select>
-            <input type="number" class="deductionamt" value="${d.amount}">
-            <button type="button" class="btn-icon add-btn add-deduction-btn">+</button>
-            <button type="button" class="btn-icon remove-btn remove-deduction-btn">×</button>
-          `;
-          row.querySelector('.deductionname').value = d.name;
-          deductContainer.appendChild(row);
-        });
-      }
-
-      calculateTotals(); // calculate totals on load
-    });
-});
-
-// =====================
-// Dynamic Add/Remove Rows
-// =====================
-document.addEventListener('click', function(e){
-  if(e.target.classList.contains('add-allowance-btn')){
-    const container = document.getElementById('allowances-container');
-    const newRow = e.target.closest('.allowance-row').cloneNode(true);
-    newRow.querySelectorAll('input').forEach(inp=>inp.value='');
-    container.appendChild(newRow);
-    attachInputListener(newRow.querySelector('.allowanceamt'));
+empInput.addEventListener('blur', function(){
+  if(empInput.value && !hiddenEmpId.value){
+    alert('Please select an employee from the list!');
+    empInput.value = '';
   }
-  if(e.target.classList.contains('remove-allowance-btn') && document.querySelectorAll('.allowance-row').length>1)
-    e.target.closest('.allowance-row').remove();
-  if(e.target.classList.contains('add-deduction-btn')){
-    const container = document.getElementById('deductions-container');
-    const newRow = e.target.closest('.deduction-row').cloneNode(true);
-    newRow.querySelectorAll('input').forEach(inp=>inp.value='');
-    container.appendChild(newRow);
-    attachInputListener(newRow.querySelector('.deductionamt'));
-  }
-  if(e.target.classList.contains('remove-deduction-btn') && document.querySelectorAll('.deduction-row').length>1)
-    e.target.closest('.deduction-row').remove();
 });
 
 // =====================
-// Calculate Totals & Net Salary
+// Nepal FY 2082/83 Tax Calculation
+// =====================
+function calculateNepalTax(annualIncome){
+    const slabs = [
+        { upto: 500000, rate: 0.01 },
+        { upto: 700000, rate: 0.10 },
+        { upto: 1000000, rate: 0.20 },
+        { upto: 2000000, rate: 0.30 },
+        { upto: 5000000, rate: 0.36 },
+        { upto: Infinity, rate: 0.39 }
+    ];
+    let remaining = annualIncome;
+    let prevLimit = 0;
+    let tax = 0;
+    for(const slab of slabs){
+        const taxable = Math.min(remaining, slab.upto - prevLimit);
+        if(taxable > 0){
+            tax += taxable * slab.rate;
+            remaining -= taxable;
+        }
+        prevLimit = slab.upto;
+        if(remaining <= 0) break;
+    }
+    return tax;
+}
+
+// =====================
+// NEXT BUTTON CLICK
 // =====================
 const basicSalary = document.getElementById('basic-salary');
 const totalAllowance = document.getElementById('total-allowance');
 const totalDeduction = document.getElementById('total-deduction');
 const netSalary = document.getElementById('net-salary');
 
+document.getElementById('next-btn').addEventListener('click', async function() {
+    const empId = hiddenEmpId.value;
+    const year = document.getElementById('year').value;
+    const month = document.getElementById('month').value;
+
+    if(!empId){ alert('Select employee first'); return; }
+    if(!month){ alert('Select month'); return; }
+
+    try {
+        const res = await fetch(`../controller/get_employee_finance.php?emp_id=${empId}`);
+        const data = await res.json();
+        if(data.error){ alert(data.error); return; }
+
+        const emp = employeeList.find(e => e.emp_id == empId);
+        document.getElementById('emp-name').textContent = emp.name;
+        document.getElementById('emp-id-display').textContent = emp.emp_id;
+        document.getElementById('emp-gender').textContent = data.gender;
+        document.getElementById('emp-marital').textContent = data.marital_status;
+        document.getElementById('employee-info').style.display = 'block';
+        document.getElementById('allow-deduct').style.display = 'block';
+        document.getElementById('summary').style.display = 'block';
+
+        basicSalary.value = data.basic_salary;
+
+        // ===== Allowances =====
+        const allowanceContainer = document.getElementById('allowances-container');
+        allowanceContainer.innerHTML = '';
+        const allAllowanceOptions = ["homeallowance","healthallowance","overtimeallowance","festiveallowance"];
+
+        // Convert DB allowances to map for quick lookup
+        const allowanceMap = {};
+        if(data.allowances && data.allowances.length){
+            data.allowances.forEach(a => {
+                allowanceMap[a.name.toLowerCase()] = parseFloat(a.amount);
+            });
+        }
+
+        // Always render all standard allowances with default 0 if not in DB
+        allAllowanceOptions.forEach(opt => {
+            createAllowanceRow(opt, allowanceMap[opt] || 0);
+        });
+
+        document.querySelector('input[name="otherallowancetitle"]').value = '';
+        document.querySelector('input[name="otherallowanceamt"]').value = 0;
+
+        // ===== Deductions =====
+        const deductionContainer = document.getElementById('deductions-container');
+        deductionContainer.innerHTML = '';
+
+        const pfAmount = parseFloat(basicSalary.value) * 0.1;
+        deductionContainer.innerHTML += `
+            <div class="form-row deduction-row">
+                <label>Provident Fund</label>
+                <input type="number" name="pf" class="deductionamt" value="${pfAmount}" readonly>
+            </div>
+        `;
+
+        const annualIncome = parseFloat(basicSalary.value) * 12;
+        const taxAmount = calculateNepalTax(annualIncome);
+        const taxPercent = (taxAmount / annualIncome * 100).toFixed(2);
+        deductionContainer.innerHTML += `
+            <div class="form-row deduction-row">
+                <label>Tax</label>
+                <input type="number" id="tax-amount" name="tax" class="deductionamt" value="${(taxAmount/12).toFixed(2)}" readonly>
+                <input type="hidden" id="tax-percent" value="${taxPercent}">
+            </div>
+        `;
+
+        const leave = data.deductions.find(d=>d.name.toLowerCase()==='leave') || {amount:0};
+        deductionContainer.innerHTML += `
+            <div class="form-row deduction-row">
+                <label>Leave</label>
+                <input type="number" name="deductionamt" class="deductionamt" value="${leave.amount}" >
+            </div>
+        `;
+
+        calculateTotals();
+
+    } catch(err){
+        console.error(err);
+        alert('Failed to fetch employee data');
+    }
+});
+
+// ===== Helper for Allowance Rows =====
+function createAllowanceRow(name='', amount=0){
+    const row = document.createElement('div');
+    row.classList.add('form-row','allowance-row');
+
+    const label = document.createElement('label');
+    label.textContent = name.replace('allowance',' ').replace('_',' ').replace(/\b\w/g, l => l.toUpperCase());
+
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.name = name;
+    input.classList.add('allowanceamt');
+    input.value = amount.toFixed(2);
+
+    row.append(label, input);
+    document.getElementById('allowances-container').appendChild(row);
+
+    input.addEventListener('input', calculateTotals);
+}
+
+// =====================
+// Totals & Net Salary
+// =====================
 function calculateTotals(){
-  let totalA = 0, totalD = 0;
-  
-  document.querySelectorAll('.allowanceamt').forEach(a=>{ totalA += parseFloat(a.value)||0; });
-  const otherAllow = parseFloat(document.querySelector('input[name="otherallowanceamt"]').value)||0;
-  totalA += otherAllow;
+  const basic = parseFloat(basicSalary.value) || 0;
+  let totalA = 0;
+  document.querySelectorAll('.allowanceamt').forEach(a=> totalA += parseFloat(a.value)||0);
+  totalA += parseFloat(document.querySelector('input[name="otherallowanceamt"]').value)||0;
   totalAllowance.value = totalA;
 
-  document.querySelectorAll('.deductionamt').forEach(d=>{ totalD += parseFloat(d.value)||0; });
-  const otherDeduct = parseFloat(document.querySelector('input[name="otherdeductionamt"]').value)||0;
-  totalD += otherDeduct;
+  const pfAmount = parseFloat(document.querySelector('input[name="pf"]').value) || 0;
+  const taxInput = document.getElementById('tax-amount');
+  let totalD = pfAmount + parseFloat(taxInput.value||0);
+
+  document.querySelectorAll('.deduction-row input').forEach(d=>{
+      if(d.name !== 'pf' && d.id !== 'tax-amount'){
+          totalD += parseFloat(d.value)||0;
+      }
+  });
+  totalD += parseFloat(document.querySelector('input[name="otherdeductionamt"]').value)||0;
   totalDeduction.value = totalD;
 
-  const basic = parseFloat(basicSalary.value)||0;
   netSalary.value = (basic + totalA - totalD).toFixed(2);
 }
 
-// Attach listener to input
-function attachInputListener(input){
-  input.addEventListener('input', calculateTotals);
-}
-[basicSalary, document.querySelector('input[name="otherallowanceamt"]'), document.querySelector('input[name="otherdeductionamt"]')].forEach(el=>el.addEventListener('input', calculateTotals));
-document.querySelectorAll('.allowanceamt, .deductionamt').forEach(attachInputListener);
+[basicSalary, document.querySelector('input[name="otherallowanceamt"]'), document.querySelector('input[name="otherdeductionamt"]')]
+.forEach(el=>el.addEventListener('input', calculateTotals));
+document.addEventListener('input', function(e){
+    if(e.target.classList.contains('allowanceamt') || e.target.classList.contains('deductionamt')){
+        calculateTotals();
+    }
+});
 
 // =====================
-// Create Payslip
+// Create Payslip Button
 // =====================
-document.getElementById('create-payslip-btn').addEventListener('click', function(){
-  const data = {
-    employee_id: document.getElementById('employee_id').value,
-    department_id: document.getElementById('department').value,
-    year: document.getElementById('year').value,
-    month: document.getElementById('month').value,
-    basic_salary: parseFloat(basicSalary.value)||0,
-    total_allowance: parseFloat(totalAllowance.value)||0,
-    total_deduction: parseFloat(totalDeduction.value)||0,
-    net_salary: parseFloat(netSalary.value)||0,
-    status: document.getElementById('status').value,
-    allowances: Array.from(document.querySelectorAll('.allowance-row')).map(r=>({
-      name: r.querySelector('.allowancename').value,
-      amount: parseFloat(r.querySelector('.allowanceamt').value)||0
-    })),
-    deductions: Array.from(document.querySelectorAll('.deduction-row')).map(r=>({
-      name: r.querySelector('.deductionname').value,
-      amount: parseFloat(r.querySelector('.deductionamt').value)||0
-    }))
-  };
+document.getElementById("create-payslip-btn").addEventListener("click", async function () {
+    const empId = document.getElementById("employee_id").value;
+    const deptId = document.getElementById("department").value;
+    const year = document.getElementById("year").value;
+    const month = document.getElementById("month").value;
+    const basic = parseFloat(document.getElementById("basic-salary").value);
+    const totalAllowanceVal = parseFloat(document.getElementById("total-allowance").value);
+    const totalDeductionVal = parseFloat(document.getElementById("total-deduction").value);
+    const netSalaryVal = parseFloat(document.getElementById("net-salary").value);
+    const status = document.getElementById("status").value;
 
-  // Include Other Allowance
-  const otherAllowTitle = document.querySelector('input[name="otherallowancetitle"]').value.trim();
-  const otherAllowAmt = parseFloat(document.querySelector('input[name="otherallowanceamt"]').value)||0;
-  if(otherAllowTitle && otherAllowAmt>0) data.allowances.push({name: otherAllowTitle, amount: otherAllowAmt});
+    if (!empId || !deptId || !basic || !month || !year) {
+        alert("Missing required fields!");
+        return;
+    }
 
-  // Include Other Deduction
-  const otherDeductTitle = document.querySelector('input[name="otherdeductiontitle"]').value.trim();
-  const otherDeductAmt = parseFloat(document.querySelector('input[name="otherdeductionamt"]').value)||0;
-  if(otherDeductTitle && otherDeductAmt>0) data.deductions.push({name: otherDeductTitle, amount: otherDeductAmt});
+    // ===== Collect Allowances =====
+    let allowances = {
+        homeallowance: 0,
+        healthallowance: 0,
+        overtimeallowance: 0,
+        festiveallowance: 0,
+        other: 0,
+        other_allowance_name: ''
+    };
 
-  fetch('../controller/create_payslip_backend.php', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify(data)
-  })
-  .then(res=>res.json())
-  .then(res=>alert(res.message || res.error));
+    document.querySelectorAll("#allowances-container .allowance-row").forEach(row => {
+        const input = row.querySelector(".allowanceamt");
+        const name = input.name.toLowerCase();
+        const amount = parseFloat(input.value)||0;
+        allowances[name] = amount;
+    });
+
+    const otherName = document.querySelector('input[name="otherallowancetitle"]').value;
+    const otherAmt = parseFloat(document.querySelector('input[name="otherallowanceamt"]').value)||0;
+    if(otherAmt){
+        allowances.other = otherAmt;
+        allowances.other_allowance_name = otherName || 'Other';
+    }
+
+    // ===== Deductions =====
+    let deductions = [];
+    const pfAmount = parseFloat(document.querySelector('input[name="pf"]').value)||0;
+    const taxAmount = parseFloat(document.getElementById('tax-amount').value)||0;
+    const taxPercent = parseFloat(document.getElementById('tax-percent').value)||0;
+
+    deductions.push({ name: 'Provident Fund', amount: pfAmount, pf_percent: 10 });
+    deductions.push({ name: 'Tax', amount: taxAmount, tax_percent: taxPercent });
+
+    document.querySelectorAll("#deductions-container .deduction-row input").forEach(d=>{
+        if(d.name !== 'pf' && d.id !== 'tax-amount'){
+            deductions.push({
+                name: d.previousElementSibling.textContent,
+                amount: parseFloat(d.value)||0
+            });
+        }
+    });
+
+    const otherDedTitle = document.querySelector('input[name="otherdeductiontitle"]').value;
+    const otherDedAmt = parseFloat(document.querySelector('input[name="otherdeductionamt"]').value) || 0;
+    if(otherDedTitle && otherDedAmt){
+        deductions.push({ name: 'Other', other_name: otherDedTitle, amount: otherDedAmt });
+    }
+
+    const payload = {
+        emp_id: empId,
+        dept_id: parseInt(deptId),
+        year: parseInt(year),
+        month,
+        basic_salary: basic,
+        total_allowance: totalAllowanceVal,
+        total_deduction: totalDeductionVal,
+        net_salary: netSalaryVal,
+        status,
+        allowances,
+        deductions
+    };
+
+    try {
+        const res = await fetch("../controller/create_payslip_backend.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        if(result.success){
+            alert("Payslip created successfully!");
+            location.reload();
+        } else {
+            alert("Error: " + result.message);
+        }
+    } catch(err){
+        console.error(err);
+        alert("Fetch failed: see console");
+    }
 });
 </script>
 

@@ -12,7 +12,6 @@ header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1
 header("Pragma: no-cache"); // HTTP 1.0
 header("Expires: 0"); // Proxies
 
-
 $page_title = "Payslip List";
 $page_css = [
     "/payrollself/includes/dashboard.css",
@@ -158,9 +157,7 @@ document.addEventListener('click',(e)=>{
 });
 document.getElementById('year-input').value = currentYear;
 document.getElementById('month-input').value = new Intl.DateTimeFormat('en',{month:'long'}).format(currentDate);
-
-getMonthNames();
-generateMonthOptions()
+generateMonthOptions();
 
 // ===== Load Departments =====
 async function loadDepartments(){
@@ -208,8 +205,18 @@ async function loadPayslips(){
                 </select>
             </td>
             <td>
-                <button class="btn-download" data-id="${row.payslip_id}"><i class="fa-solid fa-download"></i> Download</button>
-                <button class="btn-delete" data-id="${row.payslip_id}"><i class="fa-solid fa-xmark"></i> Delete</button>
+                <button class="btn-download" 
+                    data-employee="${row.employee_id}" 
+                    data-year="${row.year}" 
+                    data-month="${row.month}">
+                    <i class="fa-solid fa-download"></i> Download
+                </button>
+                <button class="btn-delete" 
+                    data-employee="${row.employee_id}" 
+                    data-year="${row.year}" 
+                    data-month="${row.month}">
+                    <i class="fa-solid fa-xmark"></i> Delete
+                </button>
             </td>
         `;
         tbody.appendChild(tr);
@@ -218,6 +225,7 @@ async function loadPayslips(){
     attachRowEvents();
 }
 
+// ===== Show Alert =====
 function showMessage(type,text){
     const msg=document.getElementById("alertMessage");
     msg.className="message "+type;
@@ -226,19 +234,54 @@ function showMessage(type,text){
     setTimeout(()=>msg.style.display="none",3000);
 }
 
+// ===== Attach Events to Buttons =====
 function attachRowEvents(){
-    document.querySelectorAll(".btn-download").forEach(btn=>{
-        btn.addEventListener("click",e=>{
-            const id=e.target.closest("button").dataset.id;
-            window.location.href=`../controller/download_payslip.php?payslip_id=${id}`;
-        });
+    document.querySelectorAll(".btn-download").forEach(btn => {
+    btn.addEventListener("click", async e => {
+        const button = e.target.closest("button");
+        const empId = button.dataset.employee;
+        const year = button.dataset.year;
+        const month = button.dataset.month;
+
+        // Build URL
+        const url = `../controller/download_payslip.php?employee_id=${empId}&year=${year}&month=${month}`;
+
+        // Fetch PDF as blob
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const fileURL = URL.createObjectURL(blob);
+
+        // Open in new tab
+        window.open(fileURL, "_blank");
+
+        // Trigger automatic download
+        const a = document.createElement("a");
+        a.href = fileURL;
+        a.download = `payslip_${empId}_${month}_${year}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+
+        // Release blob memory
+        URL.revokeObjectURL(fileURL);
     });
+});
+
+
     document.querySelectorAll(".btn-delete").forEach(btn=>{
-        btn.addEventListener("click",async e=>{
+        btn.addEventListener("click", async e=>{
             if(!confirm("Are you sure you want to delete this payslip?")) return;
-            const id=e.target.closest("button").dataset.id;
+
+            const button = e.target.closest("button");
+            const empId = button.dataset.employee;
+            const year  = button.dataset.year;
+            const month = button.dataset.month;
+
             const fd=new FormData();
-            fd.append("payslip_id",id);
+            fd.append("employee_id",empId);
+            fd.append("year",year);
+            fd.append("month",month);
+
             const res=await fetch("../controller/delete_payslip.php",{method:"POST",body:fd});
             const result=await res.json();
             showMessage(result.success?"success":"error",result.message);
@@ -257,6 +300,8 @@ document.getElementById('previouspage').addEventListener('click',()=>{ if(curren
 // ===== Init =====
 loadPayslips();
 </script>
+
+
 <?php
 $page_content = ob_get_clean();
 include __DIR__ . '/../layouts/main.php';

@@ -2,35 +2,47 @@
 header('Content-Type: application/json');
 require_once '../config/db.php';
 
-$year   = isset($_GET['year']) ? $_GET['year'] : date('Y');
-$month  = isset($_GET['month']) ? $_GET['month'] : date('F');
-$search = isset($_GET['search']) ? $_GET['search'] : '';
-$dept   = isset($_GET['dept']) ? $_GET['dept'] : '';
+$year   = $_GET['year']   ?? date('Y');
+$month  = $_GET['month']  ?? date('F');
+$dept   = $_GET['dept']   ?? '';
+$search = $_GET['search'] ?? '';
 
-$searchParam = "%$search%";
-
-$sql = "SELECT p.payslip_id, p.employee_id, e.name AS employee_name, 
-               p.net_salary, p.status, p.created_at, p.month
+$sql = "SELECT p.employee_id, e.name AS employee_name,
+               p.year, p.month, p.basic_salary,
+               p.total_allowance, p.total_deduction,
+               p.net_salary, p.status, p.created_at
         FROM payslips p
         JOIN employees_personal e ON e.emp_id = p.employee_id
         JOIN employees_company ec ON ec.emp_id = e.emp_id
-        WHERE p.year = ? 
-          AND LOWER(p.month) = LOWER(?) 
-          AND (e.emp_id LIKE ? OR e.name LIKE ?)";
+        WHERE p.year = ? AND LOWER(p.month) = LOWER(?)";
 
-$params = [$year, $month, $searchParam, $searchParam];
-$types  = "isss";
+$params = [$year, $month];
+$types  = "is";
 
-// Department filter
-if (!empty($dept)) {
+// department filter
+if ($dept !== '') {
     $sql .= " AND ec.dept_id = ?";
     $params[] = $dept;
-    $types .= "i";
+    $types   .= "i";
+}
+
+// search filter
+if ($search !== '') {
+    $sql .= " AND (e.emp_id LIKE ? OR e.name LIKE ?)";
+    $like = "%$search%";
+    $params[] = $like;
+    $params[] = $like;
+    $types   .= "ss";
 }
 
 $sql .= " ORDER BY p.created_at DESC";
 
 $stmt = $conn->prepare($sql);
+if (!$stmt) {
+    echo json_encode(["error" => $conn->error]);
+    exit;
+}
+
 $stmt->bind_param($types, ...$params);
 $stmt->execute();
 $result = $stmt->get_result();

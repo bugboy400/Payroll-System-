@@ -166,21 +166,17 @@ while($row = $departments->fetch_assoc()){
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Deductions</label>
-                        <div id="deductions-container" class="d-flex flex-column gap-2">
-                            <div class="d-flex gap-2 deduction-row">
-                                <select name="deduction[]" class="form-select deductionname">
-                                    <option value="providentfund">Provident Fund</option>
-                                    <option value="leave">Leave</option>
-                                </select>
-                                <input type="number" name="deductionamt[]" class="form-control deductionamt" placeholder="Amount">
-                                <div class="invalid-feedback">Amount must be non-negative.</div>
-                                <button type="button" class="btn btn-success add-deduction-btn">+</button>
-                                <button type="button" class="btn btn-danger remove-deduction-btn">−</button>
-                            </div>
-                        </div>
-                    </div>
+                   <div class="mb-3">
+    <label class="form-label">Deductions</label>
+    <div id="deductions-container" class="d-flex flex-column gap-2">
+        <div class="d-flex gap-2 deduction-row align-items-center">
+            <input type="text" class="form-control" value="Provident Fund" readonly style="flex: 1; pointer-events: none; background-color: #e9ecef;">
+            <input type="number" name="deductionamt" id="providentfund" class="form-control" placeholder="Amount" readonly style="flex: 1;">
+        </div>
+    </div>
+</div>
+
+
 
                     <div class="mb-3">
                         <label for="totalsal" class="form-label">TOTAL Salary</label>
@@ -353,12 +349,21 @@ document.addEventListener('click', e=>{
 // --- Total Salary ---
 function calculateTotalSalary(){
     let basic = parseFloat(basicSalInput.value) || 0;
+
+    // Auto calculate Provident Fund as 10% of Basic Salary
+    const pfInput = document.querySelector('.deductionamt');
+    pfInput.value = (basic * 0.1).toFixed(2);
+
+    // Sum allowances
     let totalAllowance = 0;
-    document.querySelectorAll('.allowanceamt').forEach(a=> totalAllowance += parseFloat(a.value)||0);
-    let totalDeduction = 0;
-    document.querySelectorAll('.deductionamt').forEach(d=> totalDeduction += parseFloat(d.value)||0);
+    document.querySelectorAll('.allowanceamt').forEach(a => totalAllowance += parseFloat(a.value)||0);
+
+    // Provident Fund is the only deduction
+    let totalDeduction = parseFloat(pfInput.value) || 0;
+
     totalSalInput.value = basic + totalAllowance - totalDeduction;
 }
+
 
 // --- Form submit ---
 form.addEventListener('submit', e=>{
